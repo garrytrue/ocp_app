@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MainView {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int ANIMATION_Y_DISTANCE = 1000;
     private TextView question, description;
     private EditText questionNumber;
     private View answerBtn, descBtn;
@@ -28,7 +30,28 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private View descBlind;
     private MainPresenter presenter;
     private List<CheckBox> checkBoxes;
-    private int descriptionHeight;
+    private List<CompoundButton> selectedItems = new ArrayList<>();
+    private List<Integer> correctAnswersIds;
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
+        switch (buttonView.getId()) {
+            case R.id.cb_id_1:
+                buttonView.setTag(1);
+                handleCheckBoxAction(isChecked, buttonView);
+                break;
+            case R.id.cb_id_2:
+                buttonView.setTag(2);
+                handleCheckBoxAction(isChecked, buttonView);
+                break;
+            case R.id.cb_id_3:
+                buttonView.setTag(3);
+                handleCheckBoxAction(isChecked, buttonView);
+                break;
+            case R.id.cb_id_4:
+                buttonView.setTag(4);
+                handleCheckBoxAction(isChecked, buttonView);
+                break;
+        }
+    };
 
 
     @Override
@@ -45,10 +68,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
         description = (TextView) findViewById(R.id.description);
         descBtn = findViewById(R.id.desc_btn);
         descBtn.setOnClickListener(v -> {
-            descBlind.animate().translationY(descriptionHeight).start();
+            descBlind.animate().translationYBy(ANIMATION_Y_DISTANCE).start();
         });
         descBlind = findViewById(R.id.desc_blind);
         answerBtn = findViewById(R.id.answer_btn);
+        answerBtn.setOnClickListener(v -> {
+            handleMakeAnswerAction();
+        });
         questionNumber = (EditText) findViewById(R.id.number);
         answer1 = (CheckBox) findViewById(R.id.cb_id_1);
         answer2 = (CheckBox) findViewById(R.id.cb_id_2);
@@ -59,7 +85,15 @@ public class MainActivity extends AppCompatActivity implements MainView {
         checkBoxes.add(answer2);
         checkBoxes.add(answer3);
         checkBoxes.add(answer4);
+        for (CheckBox cb : checkBoxes) {
+            cb.setOnCheckedChangeListener(checkedChangeListener);
+        }
+    }
 
+    private void handleMakeAnswerAction() {
+        for (CompoundButton btn: selectedItems) {
+            correctAnswersIds.contains(btn.getTag());
+        }
     }
 
     @Override
@@ -75,13 +109,21 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private void updateUI(Question data) {
         question.setText(data.getText());
         description.setText(data.getDescription());
-        Log.d(TAG, "updateUI: Description Height " + description.getHeight());
-        descriptionHeight = description.getHeight();
         questionNumber.setText(String.valueOf(data.getId()));
+        correctAnswersIds = data.getCorrectAnswersIds();
         Log.d(TAG, "updateUI: " + checkBoxes.size());
         for (int i = 0; i < checkBoxes.size(); i++) {
             Log.d(TAG, "updateUI: " + data.getAnswers().get(i).getText());
             checkBoxes.get(i).setText(data.getAnswers().get(i).getText());
+        }
+        Log.d(TAG, "updateUI: " + data.getCorrectAnswersIds());
+    }
+
+    private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
+        if (isChecked) {
+            selectedItems.add(button);
+        } else {
+            selectedItems.remove(button);
         }
     }
 }
