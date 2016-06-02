@@ -1,17 +1,16 @@
 package com.tiv.ocpapp.ui;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tiv.ocpapp.R;
-import com.tiv.ocpapp.model.Answer;
 import com.tiv.ocpapp.model.Question;
 import com.tiv.ocpapp.mvp.MainPresenter;
 import com.tiv.ocpapp.mvp.MainPresenterImpl;
@@ -23,6 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements MainView {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int ANIMATION_Y_DISTANCE = 1000;
+    private static final int CORRECTNESS_TAG = 103;
     private TextView question, description;
     private EditText questionNumber;
     private View answerBtn, descBtn;
@@ -31,23 +31,18 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private MainPresenter presenter;
     private List<CheckBox> checkBoxes;
     private List<CompoundButton> selectedItems = new ArrayList<>();
-    private List<Integer> correctAnswersIds;
-    private CompoundButton.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
+    private CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
         switch (buttonView.getId()) {
             case R.id.cb_id_1:
-                buttonView.setTag(1);
                 handleCheckBoxAction(isChecked, buttonView);
                 break;
             case R.id.cb_id_2:
-                buttonView.setTag(2);
                 handleCheckBoxAction(isChecked, buttonView);
                 break;
             case R.id.cb_id_3:
-                buttonView.setTag(3);
                 handleCheckBoxAction(isChecked, buttonView);
                 break;
             case R.id.cb_id_4:
-                buttonView.setTag(4);
                 handleCheckBoxAction(isChecked, buttonView);
                 break;
         }
@@ -91,9 +86,37 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void handleMakeAnswerAction() {
-        for (CompoundButton btn: selectedItems) {
-            correctAnswersIds.contains(btn.getTag());
+        if (!selectedItems.isEmpty()) {
+            highlightAnswers();
+            // TODO: 02.06.2016 Need show description
+        } else {
+            // TODO: 02.06.2016 Need show warning 
         }
+
+    }
+    }
+
+    private void highlightAnswers() {
+        for (CheckBox cb : checkBoxes) {
+            cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
+                    ? ContextCompat.getColor(this, android.R.color.holo_green_dark)
+                    : ContextCompat.getColor(this, android.R.color.holo_red_dark));
+            cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
+                    ? ContextCompat.getColor(this, android.R.color.darker_gray)
+                    : ContextCompat.getColor(this, android.R.color.holo_blue_bright));
+
+        }
+    }
+
+    private boolean isAnswersCorrect() {
+        boolean result = true;
+        for (CompoundButton cb : selectedItems) {
+            boolean bl = (boolean) cb.getTag(R.id.CORRECTNESS_TAG);
+            Log.d(TAG, "handleMakeAnswerAction: isCorrect " + bl);
+            result &= bl;
+        }
+        Log.d(TAG, "handleMakeAnswerAction: Result " + result);
+        return result;
     }
 
     @Override
@@ -110,13 +133,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
-        correctAnswersIds = data.getCorrectAnswersIds();
         Log.d(TAG, "updateUI: " + checkBoxes.size());
         for (int i = 0; i < checkBoxes.size(); i++) {
             Log.d(TAG, "updateUI: " + data.getAnswers().get(i).getText());
             checkBoxes.get(i).setText(data.getAnswers().get(i).getText());
+            Log.d(TAG, "updateUI: I= " + i + " IsCorrect " + data.getAnswers().get(i).isCorrect());
+            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).isCorrect());
         }
-        Log.d(TAG, "updateUI: " + data.getCorrectAnswersIds());
     }
 
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
