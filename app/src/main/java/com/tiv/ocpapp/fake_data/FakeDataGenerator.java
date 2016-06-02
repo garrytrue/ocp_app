@@ -34,21 +34,11 @@ public class FakeDataGenerator {
             answer.setId(i);
             answer.setText(FAKE_STRING.substring(0, random.nextInt(200)));
             answers.add(answer);
+            if(i%2 == 0){
+                answer.setCorrect(true);
+            }
         }
         question.setAnswers(answers);
-        int correctCount = randomInRange(random, 1, 4);
-        List<Integer> correctAnswers = new ArrayList<>(correctCount);
-        for (int i = 0; i < correctCount; i++) {
-            correctAnswers.add(randomInRange(random, 1, 4));
-        }
-        question.setCorrectAnswersIds(correctAnswers);
         return question;
     }
-
-    private int randomInRange(Random rand, int min, int max) {
-        if (min >= max)
-            throw new IllegalArgumentException("Min value is greater than max value");
-        return rand.nextInt(max - min) + min;
-    }
-
 }
