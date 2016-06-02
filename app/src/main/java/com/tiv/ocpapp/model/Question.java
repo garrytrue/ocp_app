@@ -8,7 +8,6 @@ public class Question {
     private String text;
     private List<Answer> answers;
     private String description;
-    private List<Integer> correctAnswersIds;
 
     public int getId() {
         return id;
@@ -40,13 +39,5 @@ public class Question {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Integer> getCorrectAnswersIds() {
-        return correctAnswersIds;
-    }
-
-    public void setCorrectAnswersIds(List<Integer> correctAnswersIds) {
-        this.correctAnswersIds = correctAnswersIds;
     }
 }

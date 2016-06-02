@@ -36,8 +36,8 @@ public class DataContentProvider extends ContentProvider {
     private static final String[] QUESTION_PROJECTION = {QuestionsTable.TABLE_NAME + DOT + QuestionsTable.COLUMN_ID + " AS " + QUESTION_ID_ALIAS
             + QuestionsTable.COLUMN_QUESTION_TEXT
             + QuestionsTable.COLUMN_DESCRIPTION
-            + QuestionsTable.COLUMN_CORRECT_ANSWER_ID
-            + AnswersTable.COLUMN_ANSWER_TEXT};
+            + AnswersTable.COLUMN_ANSWER_TEXT
+            + AnswersTable.COLUMN_IS_CORRECT};
     private static final String JOIN_REQUEST = QuestionsTable.TABLE_NAME + " LEFT JOIN " + AnswersTable.TABLE_NAME
             + " ON "
             + QuestionsTable.TABLE_NAME + DOT + QuestionsTable.COLUMN_ID

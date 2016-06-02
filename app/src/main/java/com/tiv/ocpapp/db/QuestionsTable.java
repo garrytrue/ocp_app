@@ -10,13 +10,11 @@ public class QuestionsTable {
     //    Fields
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_QUESTION_TEXT = "question_text";
-    public static final String COLUMN_CORRECT_ANSWER_ID = "correct_answer_id";
     public static final String COLUMN_DESCRIPTION = "description";
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME +
             "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + COLUMN_QUESTION_TEXT + " TEXT NOT NULL, "
-            + COLUMN_CORRECT_ANSWER_ID + " INTEGER NOT NULL, "
             + COLUMN_DESCRIPTION + " TEXT"
             + ");";
 
