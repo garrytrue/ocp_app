@@ -14,6 +14,7 @@ public class ActivityMain extends AppCompatActivity implements StartFragment.OnA
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_v2);
+
         if(getFragmentManager().findFragmentByTag(StartFragment.TAG) == null)
         getFragmentManager().beginTransaction().add(R.id.fragment_container, StartFragment.newInstance(), StartFragment.TAG).commit();
     }
@@ -22,4 +23,5 @@ public class ActivityMain extends AppCompatActivity implements StartFragment.OnA
     public void onArrowClicked(String value) {
         getFragmentManager().beginTransaction().setCustomAnimations(R.animator.from_right_to_left, R.animator.from_left_to_right).replace(R.id.fragment_container, QuestionFragment.newInstance(value), QuestionFragment.TAG).commit();
     }
+
 }
