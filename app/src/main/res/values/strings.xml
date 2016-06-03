@@ -2,5 +2,9 @@
     <string name="app_name">OCPApp</string>
     <string name="question_tag">Question # </string>
     <string name="lorem_ipsum">Nunc eget nisi libero. Proin eget hendrerit nisi, eu aliquet dui. Cras imperdiet euismod orci, non molestie justo dignissim quis. Donec quam orci, mattis eu turpis eu, luctus commodo mi. Integer in aliquet nibh. Nam a euismod quam. Suspendisse justo massa, pellentesque at ornare eu, luctus at urna. Suspendisse et diam et leo facilisis rutrum. Morbi velit ante, fringilla sit amet nisi sit amet, mollis facilisis neque. Aliquam et mollis odio, at tristique augue. Integer in lobortis odio.</string>
-    <item type="id" name="CORRECTNESS_TAG"/>
+    <item name="CORRECTNESS_TAG" type="id" />
+    <string name="hint_question_number">Input question number</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

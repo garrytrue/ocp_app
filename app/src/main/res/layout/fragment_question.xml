@@ -13,21 +13,22 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context=".ui.MainActivity">
 
-        <android.support.v7.widget.AppCompatTextView
+        <TextView
             android:id="@+id/question_id"
+            style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/question_tag"
             android:layout_alignBaseline="@+id/number"
             android:layout_alignBottom="@+id/number"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:text="@string/question_tag" />
 
-        <EditText
+        <TextView
             android:id="@+id/number"
+            style="@style/Base.TextAppearance.AppCompat.Body2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/question_id"
-            android:inputType="numberDecimal"
             tools:text="12" />
 
         <TextView
@@ -35,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/number"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:gravity="center_horizontal"
             tools:text="@string/lorem_ipsum" />
 
