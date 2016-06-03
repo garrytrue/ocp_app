@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tiv.ocpapp.R;
+import com.tiv.ocpapp.fake_data.FakeDataGenerator;
+import com.tiv.ocpapp.model.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +95,9 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initUI(view);
+        bindData(FakeDataGenerator.getInstance().getOneFakeQuestion());
     }
+
 
     private void initUI(View view) {
         question = (TextView) view.findViewById(R.id.question_text);
@@ -119,6 +124,15 @@ public class QuestionFragment extends Fragment {
         for (CheckBox cb : checkBoxes) {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
+    }
+    private void bindData(Question data) {
+        question.setText(data.getText());
+                description.setText(data.getDescription());
+                questionNumber.setText(String.valueOf(data.getId()));
+                for (int i = 0; i < checkBoxes.size(); i++) {
+                    checkBoxes.get(i).setText(data.getAnswers().get(i).getText());
+                    checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).isCorrect());
+                }
     }
 
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
@@ -154,11 +168,11 @@ public class QuestionFragment extends Fragment {
     private void highlightAnswers() {
         for (CheckBox cb : checkBoxes) {
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
-                    ? ContextCompat.getColor(getContext(), android.R.color.holo_green_dark)
-                    : ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
+                    ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
+                    : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
             cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
-                    ? ContextCompat.getColor(getContext(), android.R.color.darker_gray)
-                    : ContextCompat.getColor(getContext(), android.R.color.holo_blue_bright));
+                    ? ContextCompat.getColor(getActivity(), android.R.color.darker_gray)
+                    : ContextCompat.getColor(getActivity(), android.R.color.holo_blue_bright));
 
         }
     }

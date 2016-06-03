@@ -18,10 +18,10 @@
             </intent-filter>
         </activity>
 
-        <provider
+        <!--<provider
             android:name=".db.DataContentProvider"
             android:authorities="com.tiv.ocpapp.db.DataContentProvider"
-            android:exported="false" />
+            android:exported="false" />-->
     </application>
 
 </manifest>
