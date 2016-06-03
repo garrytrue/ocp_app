@@ -15,8 +15,9 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tiv.ocpapp.R;
-import com.tiv.ocpapp.fake_data.FakeDataGenerator;
-import com.tiv.ocpapp.model.Question;
+import com.tiv.ocpapp.app.OcpApplication;
+import com.tiv.ocpapp.model_dao.DaoSession;
+import com.tiv.ocpapp.model_dao.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initUI(view);
-        bindData(FakeDataGenerator.getInstance().getOneFakeQuestion());
+        bindData(loadData(currentQuestionNumber));
     }
 
 
@@ -125,14 +126,34 @@ public class QuestionFragment extends Fragment {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
     }
+
     private void bindData(Question data) {
         question.setText(data.getText());
-                description.setText(data.getDescription());
-                questionNumber.setText(String.valueOf(data.getId()));
-                for (int i = 0; i < checkBoxes.size(); i++) {
-                    checkBoxes.get(i).setText(data.getAnswers().get(i).getText());
-                    checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).isCorrect());
-                }
+        description.setText(data.getDescription());
+        questionNumber.setText(String.valueOf(data.getId()));
+        for (int i = 0; i < checkBoxes.size(); i++) {
+            checkBoxes.get(i).setText(data.getAnswers().get(i).getBody());
+            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).getIsCorrect());
+        }
+    }
+
+    private com.tiv.ocpapp.model_dao.Question loadData(String id) {
+        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+        com.tiv.ocpapp.model_dao.QuestionDao questionDao = session.getQuestionDao();
+        int qId = getQuestionDbId(id);
+       Question question = questionDao.load((long) qId);
+        return question;
+    }
+
+    private int getQuestionDbId(String id) {
+        int dbId = -1;
+        try {
+            dbId = Integer.parseInt(id);
+        } catch (NumberFormatException ex) {
+            Log.e(TAG, "getQuestionDbId: ", ex);
+            dbId = 1;
+        }
+        return dbId;
     }
 
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {

@@ -21,10 +21,11 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public Observable<Question> getData() {
-        return Observable.fromCallable(() -> {
+        return null;
+                /*Observable.fromCallable(() -> {
             SystemClock.sleep(2000);
             return FakeDataGenerator.getInstance().getOneFakeQuestion();
-        });
+        });*/
     }
 
     @Override

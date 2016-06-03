@@ -1,13 +1,21 @@
 package com.tiv.ocpapp.fake_data;
 
-import com.tiv.ocpapp.model.Answer;
-import com.tiv.ocpapp.model.Question;
+import android.util.Log;
+
+import com.tiv.ocpapp.app.OcpApplication;
+import com.tiv.ocpapp.model_dao.Answer;
+import com.tiv.ocpapp.model_dao.AnswerDao;
+import com.tiv.ocpapp.model_dao.DaoSession;
+import com.tiv.ocpapp.model_dao.Question;
+import com.tiv.ocpapp.model_dao.QuestionDao;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class FakeDataGenerator {
+    private static final String TAG = FakeDataGenerator.class.getSimpleName();
     private FakeDataGenerator() {
     }
 
@@ -22,23 +30,32 @@ public class FakeDataGenerator {
         return Holder.HOLDER;
     }
 
-    public Question getOneFakeQuestion() {
+    public void insertOneFakeQuestion(DaoSession session) {
         Question question = new Question();
-        question.setId(11);
         question.setDescription(FAKE_STRING.substring(0, 800));
         question.setText(FAKE_STRING.substring(0, 500));
         Random random = new Random();
         List<Answer> answers = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
             Answer answer = new Answer();
-            answer.setId(i);
-            answer.setText(FAKE_STRING.substring(0, random.nextInt(200)));
-            answers.add(answer);
+            answer.setBody(FAKE_STRING.substring(0, random.nextInt(200)));
             if(i%2 == 0){
-                answer.setCorrect(true);
+                answer.setIsCorrect(true);
             }
+            answer.setQuestionId(question.getId());
+            answers.add(answer);
         }
-        question.setAnswers(answers);
-        return question;
+        AnswerDao answerDao = session.getAnswerDao();
+        answerDao.insertInTx(answers);
+        QuestionDao questionDao = session.getQuestionDao();
+        long id = questionDao.insert(question);
+        Log.d(TAG, "insertOneFakeQuestion: Inserted ID " + id);
+        
+    }
+
+    public void generate5QuestionsToDb(OcpApplication application){
+        for (int i = 0; i < 5; i++) {
+            insertOneFakeQuestion(application.getSession());
+        }
     }
 }

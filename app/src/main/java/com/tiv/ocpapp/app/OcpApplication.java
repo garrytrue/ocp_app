@@ -3,6 +3,7 @@ package com.tiv.ocpapp.app;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.tiv.ocpapp.fake_data.FakeDataGenerator;
 import com.tiv.ocpapp.model_dao.DaoMaster;
 import com.tiv.ocpapp.model_dao.DaoSession;
 
@@ -19,6 +20,7 @@ public class OcpApplication extends Application {
         SQLiteDatabase database = helper.getWritableDatabase();
         DaoMaster daoMaster = new DaoMaster(database);
         session = daoMaster.newSession();
+        FakeDataGenerator.getInstance().generate5QuestionsToDb(this);
     }
     public DaoSession getSession(){
         return session;
