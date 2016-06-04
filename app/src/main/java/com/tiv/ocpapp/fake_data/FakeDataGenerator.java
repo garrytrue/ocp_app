@@ -16,6 +16,7 @@ import java.util.Random;
 
 public class FakeDataGenerator {
     private static final String TAG = FakeDataGenerator.class.getSimpleName();
+
     private FakeDataGenerator() {
     }
 
@@ -35,25 +36,23 @@ public class FakeDataGenerator {
         question.setDescription(FAKE_STRING.substring(0, 800));
         question.setText(FAKE_STRING.substring(0, 500));
         Random random = new Random();
+        QuestionDao questionDao = session.getQuestionDao();
+        long id = questionDao.insert(question);
         List<Answer> answers = new ArrayList<>(4);
         for (int i = 0; i < 4; i++) {
             Answer answer = new Answer();
             answer.setBody(FAKE_STRING.substring(0, random.nextInt(200)));
-            if(i%2 == 0){
-                answer.setIsCorrect(true);
-            }
-            answer.setQuestionId(question.getId());
+            answer.setIsCorrect(i % 2 == 0);
+            answer.setQuestion(question);
             answers.add(answer);
         }
         AnswerDao answerDao = session.getAnswerDao();
         answerDao.insertInTx(answers);
-        QuestionDao questionDao = session.getQuestionDao();
-        long id = questionDao.insert(question);
         Log.d(TAG, "insertOneFakeQuestion: Inserted ID " + id);
-        
+
     }
 
-    public void generate5QuestionsToDb(OcpApplication application){
+    public void generate5QuestionsToDb(OcpApplication application) {
         for (int i = 0; i < 5; i++) {
             insertOneFakeQuestion(application.getSession());
         }
