@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.tiv.ocpapp.R;
 import com.tiv.ocpapp.app.OcpApplication;
 import com.tiv.ocpapp.model_dao.DaoSession;
 import com.tiv.ocpapp.model_dao.Question;
+import com.tiv.ocpapp.model_dao.QuestionDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,12 @@ public class QuestionFragment extends Fragment {
     private static final int ANIMATION_Y_DISTANCE = 1000;
     private static final int CORRECTNESS_TAG = 103;
     private TextView question, description, questionNumber;
-    private View answerBtn, descBtn;
     private CheckBox answer1, answer2, answer3, answer4;
     private View descBlind;
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private Question currentQuestion;
 
     private OnFragmentInteractionListener mListener;
     private List<CompoundButton> selectedItems = new ArrayList<>();
@@ -104,15 +107,11 @@ public class QuestionFragment extends Fragment {
         question = (TextView) view.findViewById(R.id.question_text);
         description = (TextView) view.findViewById(R.id.description);
         questionNumber = (TextView) view.findViewById(R.id.number);
-        descBtn = view.findViewById(R.id.desc_btn);
-        descBtn.setOnClickListener(v -> {
-            descBlind.animate().translationYBy(ANIMATION_Y_DISTANCE).start();
-        });
+//        View descBtn = view.findViewById(R.id.desc_btn);
+//        descBtn.setOnClickListener(v -> {
+//            descBlind.animate().translationYBy(ANIMATION_Y_DISTANCE).start();
+//        });
         descBlind = view.findViewById(R.id.desc_blind);
-        answerBtn = view.findViewById(R.id.answer_btn);
-        answerBtn.setOnClickListener(v -> {
-            handleMakeAnswerAction();
-        });
         answer1 = (CheckBox) view.findViewById(R.id.cb_id_1);
         answer2 = (CheckBox) view.findViewById(R.id.cb_id_2);
         answer3 = (CheckBox) view.findViewById(R.id.cb_id_3);
@@ -125,9 +124,23 @@ public class QuestionFragment extends Fragment {
         for (CheckBox cb : checkBoxes) {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
+        View bottomSheet = view.findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        view.findViewById(R.id.answer_btn).setOnClickListener(v -> onAnswerBtnClicked());
+        view.findViewById(R.id.next_btn).setOnClickListener(v -> onNextBtnClicked());
+    }
+
+    private void onNextBtnClicked() {
+        long id = currentQuestion.getId();
+        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+        QuestionDao questionDao = session.getQuestionDao();
+        currentQuestion = questionDao.load(++id);
+        bindData(currentQuestion);
+
     }
 
     private void bindData(Question data) {
+        resetCheckBoxesState(checkBoxes);
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
@@ -135,14 +148,23 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setText(data.getAnswers().get(i).getBody());
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).getIsCorrect());
         }
+        selectedItems.clear();
+
     }
 
-    private com.tiv.ocpapp.model_dao.Question loadData(String id) {
+    private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
+        for (CheckBox cb : checkBoxes) {
+            cb.setChecked(false);
+            cb.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.black));
+        }
+    }
+
+    private Question loadData(String id) {
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        com.tiv.ocpapp.model_dao.QuestionDao questionDao = session.getQuestionDao();
+        QuestionDao questionDao = session.getQuestionDao();
         int qId = getQuestionDbId(id);
-       Question question = questionDao.load((long) qId);
-        return question;
+        currentQuestion = questionDao.load((long) qId);
+        return currentQuestion;
     }
 
     private int getQuestionDbId(String id) {
@@ -175,15 +197,17 @@ public class QuestionFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private void handleMakeAnswerAction() {
+    private void onAnswerBtnClicked() {
         if (!selectedItems.isEmpty()) {
             highlightAnswers();
+//            mBottomSheetBehavior.setPeekHeight(300);
+//            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             // TODO: 02.06.2016 Need show description
         } else {
             // TODO: 02.06.2016 Need show warning
         }
-
     }
+
 
     @SuppressWarnings("all")
     private void highlightAnswers() {
@@ -191,9 +215,9 @@ public class QuestionFragment extends Fragment {
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
-            cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
-                    ? ContextCompat.getColor(getActivity(), android.R.color.darker_gray)
-                    : ContextCompat.getColor(getActivity(), android.R.color.holo_blue_bright));
+//            cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
+//                    ? ContextCompat.getColor(getActivity(), android.R.color.darker_gray)
+//                    : ContextCompat.getColor(getActivity(), android.R.color.holo_blue_bright));
 
         }
     }
