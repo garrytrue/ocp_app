@@ -63,7 +63,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/checkboxes_layout"
                 android:layout_marginTop="@dimen/check_box_top_margin"
-                android:src="@drawable/ic_done_black_24dp" />
+                app:srcCompat="@drawable/ic_done_black_24dp" />
 
             <ImageView
                 android:id="@+id/next_btn"
@@ -73,7 +73,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/checkboxes_layout"
                 android:layout_marginTop="@dimen/check_box_top_margin"
-                android:src="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
 
 
             <!-- <include
@@ -85,6 +85,7 @@
 
         </RelativeLayout>
     </ScrollView>
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
@@ -93,12 +94,31 @@
         android:clipToPadding="true"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:id="@+id/rl_bottom_sheet"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/check_box_top_margin"
-            android:text="@string/lorem_ipsum" />
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/check_box_top_margin"
+                android:gravity="center_horizontal"
+                tools:text="@string/lorem_ipsum" />
+        </RelativeLayout>
 
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/desc_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_vertical_margin"
+        app:srcCompat="@drawable/ic_help_outline_black_24dp"
+        app:fabSize="mini"
+        app:layout_anchor="@id/rl_bottom_sheet"
+        app:layout_anchorGravity="top|center"
+        android:alpha="0"/>
 </android.support.design.widget.CoordinatorLayout>

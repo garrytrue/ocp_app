@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
@@ -28,33 +29,13 @@ public class QuestionFragment extends Fragment {
     public static final String TAG = QuestionFragment.class.getSimpleName();
     private static final String QUESTION_NUMBER = "question_number";
     private static final int ANIMATION_Y_DISTANCE = 1000;
-    private static final int CORRECTNESS_TAG = 103;
     private TextView question, description, questionNumber;
-    private CheckBox answer1, answer2, answer3, answer4;
-    private View descBlind;
+    private View descBtn;
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
-    private BottomSheetBehavior mBottomSheetBehavior;
     private Question currentQuestion;
-
-    private OnFragmentInteractionListener mListener;
     private List<CompoundButton> selectedItems = new ArrayList<>();
-    private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
-        switch (buttonView.getId()) {
-            case R.id.cb_id_1:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_2:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_3:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_4:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-        }
-    };
+    private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
 
     /**
      * Use this factory method to create a new instance of
@@ -71,16 +52,6 @@ public class QuestionFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onAttach(Activity context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } /*else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,27 +78,23 @@ public class QuestionFragment extends Fragment {
         question = (TextView) view.findViewById(R.id.question_text);
         description = (TextView) view.findViewById(R.id.description);
         questionNumber = (TextView) view.findViewById(R.id.number);
-//        View descBtn = view.findViewById(R.id.desc_btn);
-//        descBtn.setOnClickListener(v -> {
-//            descBlind.animate().translationYBy(ANIMATION_Y_DISTANCE).start();
-//        });
-        descBlind = view.findViewById(R.id.desc_blind);
-        answer1 = (CheckBox) view.findViewById(R.id.cb_id_1);
-        answer2 = (CheckBox) view.findViewById(R.id.cb_id_2);
-        answer3 = (CheckBox) view.findViewById(R.id.cb_id_3);
-        answer4 = (CheckBox) view.findViewById(R.id.cb_id_4);
+        descBtn = view.findViewById(R.id.desc_btn);
         checkBoxes = new ArrayList<>(4);
-        checkBoxes.add(answer1);
-        checkBoxes.add(answer2);
-        checkBoxes.add(answer3);
-        checkBoxes.add(answer4);
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_1));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_2));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_3));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_4));
         for (CheckBox cb : checkBoxes) {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
         View bottomSheet = view.findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         view.findViewById(R.id.answer_btn).setOnClickListener(v -> onAnswerBtnClicked());
         view.findViewById(R.id.next_btn).setOnClickListener(v -> onNextBtnClicked());
+        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        descBtn.setOnClickListener(v -> mBottomSheetBehavior.setState(
+                (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                        ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
     }
 
     private void onNextBtnClicked() {
@@ -140,7 +107,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private void bindData(Question data) {
-        resetCheckBoxesState(checkBoxes);
+        resetViewsStates();
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
@@ -148,8 +115,12 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setText(data.getAnswers().get(i).getBody());
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).getIsCorrect());
         }
+    }
+    private void resetViewsStates(){
+        resetCheckBoxesState(checkBoxes);
         selectedItems.clear();
-
+        descBtn.setAlpha(0);
+        descBtn.setClickable(false);
     }
 
     private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
@@ -186,23 +157,11 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     private void onAnswerBtnClicked() {
         if (!selectedItems.isEmpty()) {
             highlightAnswers();
-//            mBottomSheetBehavior.setPeekHeight(300);
-//            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            // TODO: 02.06.2016 Need show description
+            descBtn.setClickable(true);
+            descBtn.animate().alpha(1).setDuration(1000).start();
         } else {
             // TODO: 02.06.2016 Need show warning
         }
@@ -215,10 +174,6 @@ public class QuestionFragment extends Fragment {
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
-//            cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
-//                    ? ContextCompat.getColor(getActivity(), android.R.color.darker_gray)
-//                    : ContextCompat.getColor(getActivity(), android.R.color.holo_blue_bright));
-
         }
     }
 }

@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tiv.ocpapp.ui.StartFragment">
 
     <android.support.design.widget.TextInputLayout
@@ -25,7 +26,7 @@
         android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
-        android:src="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
+        app:srcCompat="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
 
 
 </RelativeLayout>
