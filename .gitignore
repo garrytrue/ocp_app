@@ -48,5 +48,5 @@ Thumbs.db
 app/libs/
 build/
 datagenerator/libs/
-build.gradle
+#build.gradle
 libs/
