@@ -35,7 +35,7 @@ public class QuestionFragment extends Fragment {
     private TextView question, description, questionNumber;
     private View descBtn, rootLayout;
     private List<CheckBox> checkBoxes;
-    private String currentQuestionNumber;
+    private long currentQuestionNumber;
     private Question currentQuestion;
     private boolean isAnswerClicked = false;
     private final List<CompoundButton> selectedItems = new ArrayList<>();
@@ -48,10 +48,10 @@ public class QuestionFragment extends Fragment {
      * @param param1 Question ID in DB.
      * @return A new instance of fragment QuestionFragment.
      */
-    public static QuestionFragment newInstance(String param1) {
+    public static QuestionFragment newInstance(long param1) {
         QuestionFragment fragment = new QuestionFragment();
         Bundle args = new Bundle();
-        args.putString(QUESTION_NUMBER, param1);
+        args.putLong(QUESTION_NUMBER, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,7 +63,7 @@ public class QuestionFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            currentQuestionNumber = getArguments().getString(QUESTION_NUMBER);
+            currentQuestionNumber = getArguments().getLong(QUESTION_NUMBER);
         }
     }
 
@@ -183,24 +183,23 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-    private Question loadData(String id) {
+    private Question loadData(long id) {
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
         QuestionDao questionDao = session.getQuestionDao();
-        int qId = getQuestionDbId(id);
-        currentQuestion = questionDao.load((long) qId);
+        currentQuestion = questionDao.load(id);
         return currentQuestion;
     }
 
-    private int getQuestionDbId(String id) {
-        int dbId;
-        try {
-            dbId = Integer.parseInt(id);
-        } catch (NumberFormatException ex) {
-            Log.e(TAG, "getQuestionDbId: ", ex);
-            dbId = 1;
-        }
-        return dbId;
-    }
+//    private int getQuestionDbId(String id) {
+//        int dbId;
+//        try {
+//            dbId = Integer.parseInt(id);
+//        } catch (NumberFormatException ex) {
+//            Log.e(TAG, "getQuestionDbId: ", ex);
+//            dbId = 1;
+//        }
+//        return dbId;
+//    }
 
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
         if (isChecked) {

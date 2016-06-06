@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,8 @@ public class StartFragment extends Fragment {
     private OnArrowClickListener mListener;
 
     public interface OnArrowClickListener {
-        void onArrowClicked(String value);
+        void onArrowClicked(long questionId);
+
         void notValidInput(long questionCount);
     }
 
@@ -49,16 +51,21 @@ public class StartFragment extends Fragment {
 
     private void onArrowClicked() {
         if (mListener != null) {
-        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        QuestionDao questionDao = session.getQuestionDao();
-        long lastQuestionId = questionDao.count();
-        long inputQuestionId = Long.parseLong(qNumber.getText().toString());
-        Log.d(TAG, "onArrowClicked: LoastId " + lastQuestionId + " InputID " + inputQuestionId);
-        if(inputQuestionId > lastQuestionId){
-            mListener.notValidInput(lastQuestionId);
-            return;
-        }
-            mListener.onArrowClicked(qNumber.getText().toString());
+            DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+            QuestionDao questionDao = session.getQuestionDao();
+            long lastQuestionId = questionDao.count();
+            long inputQuestionId;
+            if (TextUtils.isEmpty(qNumber.getText().toString())) {
+                inputQuestionId = 1;
+            } else {
+                inputQuestionId = Long.parseLong(qNumber.getText().toString());
+            }
+            Log.d(TAG, "onArrowClicked: LoastId " + lastQuestionId + " InputID " + inputQuestionId);
+            if (inputQuestionId > lastQuestionId) {
+                mListener.notValidInput(lastQuestionId);
+                return;
+            }
+            mListener.onArrowClicked(inputQuestionId);
         }
     }
 

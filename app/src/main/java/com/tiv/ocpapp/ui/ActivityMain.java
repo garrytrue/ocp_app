@@ -26,7 +26,7 @@ public class ActivityMain extends AppCompatActivity implements StartFragment.OnA
     }
 
     @Override
-    public void onArrowClicked(String value) {
+    public void onArrowClicked(long value) {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.from_right_to_left, R.animator.from_left_to_right)
                 .replace(R.id.fragment_container, QuestionFragment.newInstance(value), QuestionFragment.TAG)
