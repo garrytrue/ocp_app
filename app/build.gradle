@@ -33,9 +33,9 @@ dependencies {
     compile "com.android.support:design:$supportLibVer"
     compile "com.android.support:support-v4:$supportLibVer"
 
-    ext.supportLibVer = '1.1.0'
-    compile "io.reactivex:rxandroid:$supportLibVer"
-    compile "io.reactivex:rxjava:$supportLibVer"
+//    ext.supportLibVer = '1.1.0'
+//    compile "io.reactivex:rxandroid:$supportLibVer"
+//    compile "io.reactivex:rxjava:$supportLibVer"
 
 
     compile 'me.tatarka:gradle-retrolambda:3.3.0-beta3'

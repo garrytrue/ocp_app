@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tiv.ocpapp.R;
+import com.tiv.ocpapp.app.OcpApplication;
+import com.tiv.ocpapp.model_dao.DaoSession;
+import com.tiv.ocpapp.model_dao.QuestionDao;
 
 
 public class StartFragment extends Fragment {
@@ -19,6 +23,7 @@ public class StartFragment extends Fragment {
 
     public interface OnArrowClickListener {
         void onArrowClicked(String value);
+        void notValidInput(long questionCount);
     }
 
     public static StartFragment newInstance() {
@@ -44,6 +49,15 @@ public class StartFragment extends Fragment {
 
     private void onArrowClicked() {
         if (mListener != null) {
+        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+        QuestionDao questionDao = session.getQuestionDao();
+        long lastQuestionId = questionDao.count();
+        long inputQuestionId = Long.parseLong(qNumber.getText().toString());
+        Log.d(TAG, "onArrowClicked: LoastId " + lastQuestionId + " InputID " + inputQuestionId);
+        if(inputQuestionId > lastQuestionId){
+            mListener.notValidInput(lastQuestionId);
+            return;
+        }
             mListener.onArrowClicked(qNumber.getText().toString());
         }
     }

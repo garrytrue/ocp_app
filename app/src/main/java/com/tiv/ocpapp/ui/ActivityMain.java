@@ -1,8 +1,10 @@
 package com.tiv.ocpapp.ui;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.tiv.ocpapp.R;
 
@@ -11,11 +13,13 @@ import com.tiv.ocpapp.R;
  */
 public class ActivityMain extends AppCompatActivity implements StartFragment.OnArrowClickListener {
     private static final String TAG = ActivityMain.class.getSimpleName();
+    private View container;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_v2);
+        container = findViewById(R.id.fragment_container);
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(R.id.fragment_container, StartFragment.newInstance(), StartFragment.TAG).commit();
         }
@@ -31,17 +35,16 @@ public class ActivityMain extends AppCompatActivity implements StartFragment.OnA
     }
 
     @Override
+    public void notValidInput(long questionCount) {
+        Snackbar.make(container, String.format(getString(R.string.msg_not_valid_input), questionCount), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         getFragmentManager().findFragmentByTag(QuestionFragment.TAG);
         if (getFragmentManager().findFragmentByTag(QuestionFragment.TAG) != null) {
             outState.putString(TAG, QuestionFragment.TAG);
         }
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onBackPressed() {
-        Log.d(TAG, "onBackPressed: ");
-        super.onBackPressed();
     }
 }

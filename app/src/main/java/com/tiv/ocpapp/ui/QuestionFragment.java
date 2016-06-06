@@ -126,10 +126,21 @@ public class QuestionFragment extends Fragment {
         long id = currentQuestion.getId();
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
         QuestionDao questionDao = session.getQuestionDao();
+            if (isLastQuestion(questionDao)){
+                // TODO: 06.06.2016 Need show last question msg
+                Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
+
+            return;
+        }
         currentQuestion = questionDao.load(++id);
         isAnswerClicked = false;
         bindData(currentQuestion);
 
+    }
+    private boolean isLastQuestion(QuestionDao questionDao){
+        long id  = currentQuestion.getId();
+        long questionCount = questionDao.count();
+        return id >= questionCount;
     }
 
     private void bindData(Question data) {
