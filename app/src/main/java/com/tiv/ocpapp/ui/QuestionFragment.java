@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import com.tiv.ocpapp.R;
 import com.tiv.ocpapp.app.OcpApplication;
 import com.tiv.ocpapp.model_dao.DaoSession;
 import com.tiv.ocpapp.model_dao.Question;
+import com.tiv.ocpapp.model_dao.QuestionDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,32 +29,13 @@ public class QuestionFragment extends Fragment {
     public static final String TAG = QuestionFragment.class.getSimpleName();
     private static final String QUESTION_NUMBER = "question_number";
     private static final int ANIMATION_Y_DISTANCE = 1000;
-    private static final int CORRECTNESS_TAG = 103;
     private TextView question, description, questionNumber;
-    private View answerBtn, descBtn;
-    private CheckBox answer1, answer2, answer3, answer4;
-    private View descBlind;
+    private View descBtn;
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
-
-    private OnFragmentInteractionListener mListener;
+    private Question currentQuestion;
     private List<CompoundButton> selectedItems = new ArrayList<>();
-    private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
-        switch (buttonView.getId()) {
-            case R.id.cb_id_1:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_2:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_3:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-            case R.id.cb_id_4:
-                handleCheckBoxAction(isChecked, buttonView);
-                break;
-        }
-    };
+    private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
 
     /**
      * Use this factory method to create a new instance of
@@ -68,16 +52,6 @@ public class QuestionFragment extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onAttach(Activity context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } /*else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,29 +79,35 @@ public class QuestionFragment extends Fragment {
         description = (TextView) view.findViewById(R.id.description);
         questionNumber = (TextView) view.findViewById(R.id.number);
         descBtn = view.findViewById(R.id.desc_btn);
-        descBtn.setOnClickListener(v -> {
-            descBlind.animate().translationYBy(ANIMATION_Y_DISTANCE).start();
-        });
-        descBlind = view.findViewById(R.id.desc_blind);
-        answerBtn = view.findViewById(R.id.answer_btn);
-        answerBtn.setOnClickListener(v -> {
-            handleMakeAnswerAction();
-        });
-        answer1 = (CheckBox) view.findViewById(R.id.cb_id_1);
-        answer2 = (CheckBox) view.findViewById(R.id.cb_id_2);
-        answer3 = (CheckBox) view.findViewById(R.id.cb_id_3);
-        answer4 = (CheckBox) view.findViewById(R.id.cb_id_4);
         checkBoxes = new ArrayList<>(4);
-        checkBoxes.add(answer1);
-        checkBoxes.add(answer2);
-        checkBoxes.add(answer3);
-        checkBoxes.add(answer4);
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_1));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_2));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_3));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_4));
         for (CheckBox cb : checkBoxes) {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
+        View bottomSheet = view.findViewById(R.id.bottom_sheet);
+        view.findViewById(R.id.answer_btn).setOnClickListener(v -> onAnswerBtnClicked());
+        view.findViewById(R.id.next_btn).setOnClickListener(v -> onNextBtnClicked());
+        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        descBtn.setOnClickListener(v -> mBottomSheetBehavior.setState(
+                (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                        ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
+    }
+
+    private void onNextBtnClicked() {
+        long id = currentQuestion.getId();
+        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+        QuestionDao questionDao = session.getQuestionDao();
+        currentQuestion = questionDao.load(++id);
+        bindData(currentQuestion);
+
     }
 
     private void bindData(Question data) {
+        resetViewsStates();
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
@@ -136,13 +116,26 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).getIsCorrect());
         }
     }
+    private void resetViewsStates(){
+        resetCheckBoxesState(checkBoxes);
+        selectedItems.clear();
+        descBtn.setAlpha(0);
+        descBtn.setClickable(false);
+    }
 
-    private com.tiv.ocpapp.model_dao.Question loadData(String id) {
+    private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
+        for (CheckBox cb : checkBoxes) {
+            cb.setChecked(false);
+            cb.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.black));
+        }
+    }
+
+    private Question loadData(String id) {
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        com.tiv.ocpapp.model_dao.QuestionDao questionDao = session.getQuestionDao();
+        QuestionDao questionDao = session.getQuestionDao();
         int qId = getQuestionDbId(id);
-       Question question = questionDao.load((long) qId);
-        return question;
+        currentQuestion = questionDao.load((long) qId);
+        return currentQuestion;
     }
 
     private int getQuestionDbId(String id) {
@@ -164,26 +157,16 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    private void handleMakeAnswerAction() {
+    private void onAnswerBtnClicked() {
         if (!selectedItems.isEmpty()) {
             highlightAnswers();
-            // TODO: 02.06.2016 Need show description
+            descBtn.setClickable(true);
+            descBtn.animate().alpha(1).setDuration(1000).start();
         } else {
             // TODO: 02.06.2016 Need show warning
         }
-
     }
+
 
     @SuppressWarnings("all")
     private void highlightAnswers() {
@@ -191,10 +174,6 @@ public class QuestionFragment extends Fragment {
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
-            cb.setBackgroundColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
-                    ? ContextCompat.getColor(getActivity(), android.R.color.darker_gray)
-                    : ContextCompat.getColor(getActivity(), android.R.color.holo_blue_bright));
-
         }
     }
 }
