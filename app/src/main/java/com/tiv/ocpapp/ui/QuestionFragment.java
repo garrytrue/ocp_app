@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -33,6 +37,7 @@ public class QuestionFragment extends Fragment {
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
     private Question currentQuestion;
+    private boolean isAnswerClicked = false;
     private final List<CompoundButton> selectedItems = new ArrayList<>();
     private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
 
@@ -55,6 +60,8 @@ public class QuestionFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             currentQuestionNumber = getArguments().getString(QUESTION_NUMBER);
         }
@@ -68,8 +75,20 @@ public class QuestionFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Toolbar mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        (getActivity()).setTitle(getString(R.string.app_name));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         initUI(view);
-        bindData(loadData(currentQuestionNumber));
+        if (currentQuestion == null) {
+            Log.d(TAG, "onViewCreated: Current Question is Null");
+            bindData(loadData(currentQuestionNumber));
+        } else {
+            Log.d(TAG, "onViewCreated: Current Question is not Null");
+            bindData(currentQuestion);
+        }
     }
 
 
@@ -95,10 +114,12 @@ public class QuestionFragment extends Fragment {
         view.findViewById(R.id.answer_btn).setOnClickListener(v -> onAnswerBtnClicked());
         view.findViewById(R.id.next_btn).setOnClickListener(v -> onNextBtnClicked());
         BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-
         descBtn.setOnClickListener(v -> mBottomSheetBehavior.setState(
                 (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                         ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
+        if (isAnswerClicked) {
+            onAnswerBtnClicked();
+        }
     }
 
     private void onNextBtnClicked() {
@@ -106,11 +127,13 @@ public class QuestionFragment extends Fragment {
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
         QuestionDao questionDao = session.getQuestionDao();
         currentQuestion = questionDao.load(++id);
+        isAnswerClicked = false;
         bindData(currentQuestion);
 
     }
 
     private void bindData(Question data) {
+        Log.d(TAG, "bindData() called with: " + "data = [" + data + "]");
         resetViewsStates();
         question.setText(data.getText());
         description.setText(data.getDescription());
@@ -124,13 +147,21 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setText(answers.get(i).getBody());
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
         }
+        if(isAnswerClicked){
+            highlightAnswers();
+        }
     }
 
     private void resetViewsStates() {
+        Log.d(TAG, "resetViewsStates: IsAnsweredClicked " + isAnswerClicked);
+        if (isAnswerClicked) {
+            return;
+        }
         resetCheckBoxesState(checkBoxes);
         selectedItems.clear();
         descBtn.setAlpha(0);
         descBtn.setClickable(false);
+        isAnswerClicked = false;
     }
 
     private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
@@ -169,6 +200,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private void onAnswerBtnClicked() {
+        isAnswerClicked = true;
         if (!selectedItems.isEmpty()) {
             highlightAnswers();
             descBtn.setClickable(true);
@@ -179,6 +211,16 @@ public class QuestionFragment extends Fragment {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                getActivity().onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @SuppressWarnings("all")
     private void highlightAnswers() {
