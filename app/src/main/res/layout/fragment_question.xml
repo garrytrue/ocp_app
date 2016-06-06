@@ -2,10 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:id="@+id/root_coordinator_layout">
+    android:fitsSystemWindows="true">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,20 +40,27 @@
                 android:layout_toRightOf="@+id/question_id"
                 tools:text="12" />
 
-            <TextView
-                android:id="@+id/question_text"
-                android:layout_width="wrap_content"
+            <HorizontalScrollView
+                android:id="@+id/text_scroll_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/number"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                tools:text="@string/lorem_ipsum" />
+                android:layout_below="@+id/number">
+
+                <TextView
+                    android:id="@+id/question_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollHorizontally="true"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    tools:text="@string/lorem_ipsum" />
+            </HorizontalScrollView>
 
             <include
                 android:id="@+id/checkboxes_layout"
                 layout="@layout/check_box_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/question_text" />
+                android:layout_below="@+id/text_scroll_container" />
 
             <ImageView
                 android:id="@+id/answer_btn"
@@ -116,9 +123,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_vertical_margin"
-        app:srcCompat="@drawable/ic_help_outline_black_24dp"
+        android:alpha="0"
         app:fabSize="mini"
         app:layout_anchor="@id/rl_bottom_sheet"
         app:layout_anchorGravity="top|center"
-        android:alpha="0"/>
+        app:srcCompat="@drawable/ic_help_outline_black_24dp" />
 </android.support.design.widget.CoordinatorLayout>
