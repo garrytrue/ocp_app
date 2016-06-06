@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,7 @@ public class QuestionFragment extends Fragment {
     private static final String QUESTION_NUMBER = "question_number";
     private static final int DEFAULT_CHECK_BOX_COUNT = 8;
     private TextView question, description, questionNumber;
-    private View descBtn;
+    private View descBtn, rootLayout;
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
     private Question currentQuestion;
@@ -78,6 +79,7 @@ public class QuestionFragment extends Fragment {
         questionNumber = (TextView) view.findViewById(R.id.number);
         descBtn = view.findViewById(R.id.desc_btn);
         checkBoxes = new ArrayList<>(DEFAULT_CHECK_BOX_COUNT);
+        rootLayout = view.findViewById(R.id.root_coordinator_layout);
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_1));
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_2));
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_3));
@@ -115,11 +117,12 @@ public class QuestionFragment extends Fragment {
         questionNumber.setText(String.valueOf(data.getId()));
         List<Answer> answers = data.getAnswers();
         for (int i = 0; i < checkBoxes.size(); i++) {
-            checkBoxes.get(i).setText(answers.get(i).getBody());
-            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
             if(i > answers.size()-1){
                 checkBoxes.get(i).setVisibility(View.GONE);
+                continue;
             }
+            checkBoxes.get(i).setText(answers.get(i).getBody());
+            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
         }
     }
     private void resetViewsStates(){
@@ -171,6 +174,7 @@ public class QuestionFragment extends Fragment {
             descBtn.animate().alpha(1).setDuration(1000).start();
         } else {
             // TODO: 02.06.2016 Need show warning
+            Snackbar.make(rootLayout, R.string.msg_answers_not_selected, Snackbar.LENGTH_SHORT).show();
         }
     }
 
