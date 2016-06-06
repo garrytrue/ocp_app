@@ -117,7 +117,7 @@ public class QuestionFragment extends Fragment {
         questionNumber.setText(String.valueOf(data.getId()));
         List<Answer> answers = data.getAnswers();
         for (int i = 0; i < checkBoxes.size(); i++) {
-            if(i > answers.size()-1){
+            if (i > answers.size() - 1) {
                 checkBoxes.get(i).setVisibility(View.GONE);
                 continue;
             }
@@ -125,7 +125,8 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
         }
     }
-    private void resetViewsStates(){
+
+    private void resetViewsStates() {
         resetCheckBoxesState(checkBoxes);
         selectedItems.clear();
         descBtn.setAlpha(0);
@@ -182,6 +183,9 @@ public class QuestionFragment extends Fragment {
     @SuppressWarnings("all")
     private void highlightAnswers() {
         for (CheckBox cb : checkBoxes) {
+            if (cb.getTag(R.id.CORRECTNESS_TAG) == null) {
+                continue;
+            }
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
