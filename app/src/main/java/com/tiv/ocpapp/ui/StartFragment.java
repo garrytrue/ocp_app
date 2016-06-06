@@ -1,26 +1,25 @@
 package com.tiv.ocpapp.ui;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tiv.ocpapp.R;
-import com.tiv.ocpapp.app.OcpApplication;
-import com.tiv.ocpapp.model_dao.DaoSession;
-import com.tiv.ocpapp.model_dao.QuestionDao;
+import com.tiv.ocpapp.mvp.StartScreenContract;
+import com.tiv.ocpapp.mvp.StartViewPresenterImpl;
 
 
-public class StartFragment extends Fragment {
+public class StartFragment extends Fragment implements StartScreenContract.StartView {
     public static final String TAG = StartFragment.class.getSimpleName();
     private EditText qNumber;
+    private StartScreenContract.Presenter mPresenter;
 
 
     public static StartFragment newInstance() {
@@ -35,6 +34,8 @@ public class StartFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        mPresenter = new StartViewPresenterImpl();
+        mPresenter.attachToView(this);
         initUI(view);
     }
 
@@ -42,31 +43,17 @@ public class StartFragment extends Fragment {
         qNumber = (EditText) view.findViewById(R.id.question_number);
         qNumber.requestFocus();
         View arrowBtn = view.findViewById(R.id.arrow_btn);
-        arrowBtn.setOnClickListener(v -> onArrowClicked());
+        arrowBtn.setOnClickListener(v -> onArrowClicked(qNumber.getText().toString()));
     }
 
-    private void onArrowClicked() {
-        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        QuestionDao questionDao = session.getQuestionDao();
-        long lastQuestionId = questionDao.count();
-        long inputQuestionId;
-        if (TextUtils.isEmpty(qNumber.getText().toString())) {
-            inputQuestionId = 1;
-        } else {
-            inputQuestionId = Long.parseLong(qNumber.getText().toString());
-        }
-        Log.d(TAG, "onArrowClicked: LoastId " + lastQuestionId + " InputID " + inputQuestionId);
-        if (inputQuestionId > lastQuestionId) {
-            errorAction(lastQuestionId);
-            return;
-        }
-        startQuestionFragment(inputQuestionId);
+    private void onArrowClicked(String str) {
+        mPresenter.onLoadById(str);
     }
 
     private void errorAction(long lastQuestionId) {
-        qNumber.setError(String.format(getString(R.string.msg_not_valid_input), lastQuestionId));
+        qNumber.setError(String.format(getString(R.string.msg_max_count_violation), lastQuestionId));
         new Handler(Looper.getMainLooper()).postDelayed(() ->
-            qNumber.setError(null), 1000);
+                qNumber.setError(null), 1000);
     }
 
     private void startQuestionFragment(long questionId) {
@@ -77,4 +64,18 @@ public class StartFragment extends Fragment {
                 .commit();
     }
 
+    @Override
+    public void showDbIdViolation(long maxCount) {
+        errorAction(maxCount);
+    }
+
+    @Override
+    public void showNextScreen(long questionId) {
+        startQuestionFragment(questionId);
+    }
+
+    @Override
+    public Context provideContext() {
+        return getActivity();
+    }
 }
