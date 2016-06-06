@@ -17,7 +17,6 @@ import java.util.List;
 public class OcpApplication extends Application {
     private static final String DB_NAME = "ocp_app.db";
     private DaoSession session;
-    private static final String TAG = OcpApplication.class.getSimpleName();
 
     @Override
     public void onCreate() {
