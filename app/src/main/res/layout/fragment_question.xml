@@ -50,8 +50,8 @@
                     android:id="@+id/question_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:scrollHorizontally="true"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:scrollHorizontally="true"
                     tools:text="@string/lorem_ipsum" />
             </HorizontalScrollView>
 
@@ -81,14 +81,6 @@
                 android:layout_below="@+id/checkboxes_layout"
                 android:layout_marginTop="@dimen/check_box_top_margin"
                 app:srcCompat="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
-
-
-            <!-- <include
-                 layout="@layout/description_layout"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_alignParentBottom="true"
-                 android:layout_below="@+id/answer_btn" />-->
 
         </RelativeLayout>
     </ScrollView>

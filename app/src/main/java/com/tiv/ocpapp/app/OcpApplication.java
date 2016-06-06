@@ -13,6 +13,7 @@ import com.tiv.ocpapp.model_dao.DaoSession;
 public class OcpApplication extends Application {
     private static final String DB_NAME = "ocp_app.db";
     private DaoSession session;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -22,7 +23,8 @@ public class OcpApplication extends Application {
         session = daoMaster.newSession();
         FakeDataGenerator.getInstance().generate5QuestionsToDb(this);
     }
-    public DaoSession getSession(){
+
+    public DaoSession getSession() {
         return session;
     }
 }
