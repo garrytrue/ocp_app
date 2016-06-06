@@ -72,6 +72,7 @@ public class QuestionFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_question, container, false);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Toolbar mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
