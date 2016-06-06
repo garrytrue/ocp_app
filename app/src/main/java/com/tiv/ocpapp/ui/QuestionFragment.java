@@ -1,10 +1,7 @@
 package com.tiv.ocpapp.ui;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +15,7 @@ import android.widget.TextView;
 
 import com.tiv.ocpapp.R;
 import com.tiv.ocpapp.app.OcpApplication;
+import com.tiv.ocpapp.model_dao.Answer;
 import com.tiv.ocpapp.model_dao.DaoSession;
 import com.tiv.ocpapp.model_dao.Question;
 import com.tiv.ocpapp.model_dao.QuestionDao;
@@ -28,7 +26,7 @@ import java.util.List;
 public class QuestionFragment extends Fragment {
     public static final String TAG = QuestionFragment.class.getSimpleName();
     private static final String QUESTION_NUMBER = "question_number";
-    private static final int ANIMATION_Y_DISTANCE = 1000;
+    private static final int DEFAULT_CHECK_BOX_COUNT = 8;
     private TextView question, description, questionNumber;
     private View descBtn;
     private List<CheckBox> checkBoxes;
@@ -79,11 +77,15 @@ public class QuestionFragment extends Fragment {
         description = (TextView) view.findViewById(R.id.description);
         questionNumber = (TextView) view.findViewById(R.id.number);
         descBtn = view.findViewById(R.id.desc_btn);
-        checkBoxes = new ArrayList<>(4);
+        checkBoxes = new ArrayList<>(DEFAULT_CHECK_BOX_COUNT);
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_1));
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_2));
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_3));
         checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_4));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_5));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_6));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_7));
+        checkBoxes.add((CheckBox) view.findViewById(R.id.cb_id_8));
         for (CheckBox cb : checkBoxes) {
             cb.setOnCheckedChangeListener(checkedChangeListener);
         }
@@ -111,9 +113,13 @@ public class QuestionFragment extends Fragment {
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
+        List<Answer> answers = data.getAnswers();
         for (int i = 0; i < checkBoxes.size(); i++) {
-            checkBoxes.get(i).setText(data.getAnswers().get(i).getBody());
-            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, data.getAnswers().get(i).getIsCorrect());
+            checkBoxes.get(i).setText(answers.get(i).getBody());
+            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
+            if(i > answers.size()-1){
+                checkBoxes.get(i).setVisibility(View.GONE);
+            }
         }
     }
     private void resetViewsStates(){
@@ -127,6 +133,7 @@ public class QuestionFragment extends Fragment {
         for (CheckBox cb : checkBoxes) {
             cb.setChecked(false);
             cb.setTextColor(ContextCompat.getColor(getActivity(), android.R.color.black));
+            cb.setVisibility(View.VISIBLE);
         }
     }
 

@@ -35,4 +35,36 @@
         android:layout_marginTop="@dimen/check_box_top_margin"
         android:ellipsize="marquee"
         android:text="@string/lorem_ipsum" />
+
+    <CheckBox
+        android:id="@+id/cb_id_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/check_box_top_margin"
+        android:ellipsize="marquee"
+        android:text="@string/lorem_ipsum" />
+
+    <CheckBox
+        android:id="@+id/cb_id_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/check_box_top_margin"
+        android:ellipsize="marquee"
+        android:text="@string/lorem_ipsum" />
+
+    <CheckBox
+        android:id="@+id/cb_id_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/check_box_top_margin"
+        android:ellipsize="marquee"
+        android:text="@string/lorem_ipsum" />
+
+    <CheckBox
+        android:id="@+id/cb_id_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/check_box_top_margin"
+        android:ellipsize="marquee"
+        android:text="@string/lorem_ipsum" />
 </LinearLayout>

@@ -42,7 +42,7 @@ public static final String DESC = "H. The code compiles without issue, so C, D, 
         Random random = new Random();
         QuestionDao questionDao = session.getQuestionDao();
         long id = questionDao.insert(question);
-        List<Answer> answers = new ArrayList<>(4);
+        List<Answer> answers = new ArrayList<>(8);
         for (int i = 0; i < 4; i++) {
             Answer answer = new Answer();
             answer.setBody(FAKE_STRING.substring(0, random.nextInt(200)));
