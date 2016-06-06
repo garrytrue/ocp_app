@@ -1,8 +1,6 @@
 # Built application files
 /*/build/
 #build.gradle
-build/*
-
 # Crashlytics configuations
 com_crashlytics_export_strings.xml
 
@@ -32,8 +30,6 @@ gradlew.bat
 #.idea/misc.xml
 #.idea/modules.xml
 .idea/scopes/scope_settings.xml
-.idea/vcs.xml
-.idea/*
 *.iml
 
 # OS-specific files

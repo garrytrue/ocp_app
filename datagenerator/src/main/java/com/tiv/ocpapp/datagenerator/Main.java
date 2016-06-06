@@ -7,7 +7,7 @@ import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
 public class Main {
-    public static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 1;
 
     public static void main(String[] args) throws Exception {
         Schema schema = new Schema(DB_VERSION, "com.tiv.ocpapp.model_dao");

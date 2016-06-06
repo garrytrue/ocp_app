@@ -33,7 +33,7 @@ public class QuestionFragment extends Fragment {
     private List<CheckBox> checkBoxes;
     private String currentQuestionNumber;
     private Question currentQuestion;
-    private List<CompoundButton> selectedItems = new ArrayList<>();
+    private final List<CompoundButton> selectedItems = new ArrayList<>();
     private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
 
     /**
@@ -150,7 +150,7 @@ public class QuestionFragment extends Fragment {
     }
 
     private int getQuestionDbId(String id) {
-        int dbId = -1;
+        int dbId;
         try {
             dbId = Integer.parseInt(id);
         } catch (NumberFormatException ex) {

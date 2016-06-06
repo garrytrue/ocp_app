@@ -15,7 +15,6 @@ import com.tiv.ocpapp.R;
 public class StartFragment extends Fragment {
     public static final String TAG = StartFragment.class.getSimpleName();
     private EditText qNumber;
-    private View arrowBtn;
     private OnArrowClickListener mListener;
 
     public interface OnArrowClickListener {
@@ -23,13 +22,7 @@ public class StartFragment extends Fragment {
     }
 
     public static StartFragment newInstance() {
-        StartFragment fragment = new StartFragment();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        return new StartFragment();
     }
 
     @Override
@@ -45,10 +38,8 @@ public class StartFragment extends Fragment {
 
     private void initUI(View view) {
         qNumber = (EditText) view.findViewById(R.id.question_number);
-        arrowBtn = view.findViewById(R.id.arrow_btn);
-        arrowBtn.setOnClickListener(v -> {
-            onArrowClicked();
-        });
+        View arrowBtn = view.findViewById(R.id.arrow_btn);
+        arrowBtn.setOnClickListener(v -> onArrowClicked());
     }
 
     private void onArrowClicked() {
