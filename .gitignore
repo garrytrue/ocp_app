@@ -1,6 +1,6 @@
 # Built application files
 /*/build/
-build.gradle
+#build.gradle
 build/*
 
 # Crashlytics configuations
@@ -22,15 +22,15 @@ gradlew.bat
 .signing/
 
 # User-specific configurations
-.idea/libraries/
-.idea/workspace.xml
+#.idea/libraries/
+#.idea/workspace.xml
 .idea/tasks.xml
-.idea/.name
-.idea/compiler.xml
-.idea/copyright/profiles_settings.xml
-.idea/encodings.xml
-.idea/misc.xml
-.idea/modules.xml
+#.idea/.name
+#.idea/compiler.xml
+#.idea/copyright/profiles_settings.xml
+#.idea/encodings.xml
+#.idea/misc.xml
+#.idea/modules.xml
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 .idea/*
@@ -44,3 +44,9 @@ gradlew.bat
 .Trashes
 ehthumbs.db
 Thumbs.db
+.idea/
+app/libs/
+build/
+datagenerator/libs/
+build.gradle
+libs/
