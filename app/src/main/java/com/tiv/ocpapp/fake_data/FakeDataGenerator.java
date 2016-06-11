@@ -55,9 +55,30 @@ public static final String DESC = "H. The code compiles without issue, so C, D, 
 
     }
 
-    public void generate5QuestionsToDb(OcpApplication application) {
+    public void generateQuestionsToDb(OcpApplication application) {
         for (int i = 0; i < 5; i++) {
             insertOneFakeQuestion(application.getSession());
         }
+    }
+    public void insertQuestion(DaoSession session, com.example.model.Question q) {
+        Question question = new Question();
+        question.setDescription(q.getDescription());
+        question.setText(q.getText());
+        QuestionDao questionDao = session.getQuestionDao();
+        long id = questionDao.insert(question);
+        List<com.example.model.Answer> answers = q.getAnswers();
+        List<Answer> answersDb = new ArrayList<>(answers.size());
+        for (com.example.model.Answer a: answers) {
+
+            Answer answer = new Answer();
+            answer.setBody(a.getBody());
+            answer.setIsCorrect(a.getCorrect());
+            answer.setQuestion(question);
+            answersDb.add(answer);
+        }
+        AnswerDao answerDao = session.getAnswerDao();
+        answerDao.insertInTx(answersDb);
+        Log.d(TAG, "insertOneFakeQuestion: Inserted ID " + id);
+
     }
 }

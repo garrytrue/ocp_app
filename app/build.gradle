@@ -40,4 +40,6 @@ dependencies {
 
     compile 'me.tatarka:gradle-retrolambda:3.3.0-beta3'
     compile 'org.greenrobot:greendao:2.2.1'
+
+    compile project (':dumploader')
 }

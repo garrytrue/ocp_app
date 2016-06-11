@@ -3,9 +3,15 @@ package com.tiv.ocpapp.app;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.model.Question;
+import com.example.service.LoadOcpDumpTextStructureImpl;
+import com.example.service.LoadOcpDumper;
 import com.tiv.ocpapp.fake_data.FakeDataGenerator;
 import com.tiv.ocpapp.model_dao.DaoMaster;
 import com.tiv.ocpapp.model_dao.DaoSession;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class OcpApplication extends Application {
@@ -20,9 +26,20 @@ public class OcpApplication extends Application {
         DaoMaster daoMaster = new DaoMaster(database);
         session = daoMaster.newSession();
         long count = session.getQuestionDao().queryBuilder().count();
-        if(count == 0) {
+        if (count == 0) {
 //            Generate and insert data only if question count in DB is 0
-            FakeDataGenerator.getInstance().generate5QuestionsToDb(this);
+            LoadOcpDumper loadOcpDumpTextStructure = new LoadOcpDumpTextStructureImpl();
+            try {
+                loadOcpDumpTextStructure.init(getAssets().open("ocp8.dump"));
+                List<Question> questions = loadOcpDumpTextStructure.loadQuestions();
+                for (Question q : questions) {
+                    FakeDataGenerator.getInstance().insertQuestion(session, q);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

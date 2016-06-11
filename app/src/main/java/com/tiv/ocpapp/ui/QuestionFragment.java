@@ -39,6 +39,7 @@ public class QuestionFragment extends Fragment {
     private boolean isAnswerClicked = false;
     private final List<CompoundButton> selectedItems = new ArrayList<>();
     private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
+    private BottomSheetBehavior mBottomSheetBehavior;
 
     /**
      * Use this factory method to create a new instance of
@@ -113,7 +114,7 @@ public class QuestionFragment extends Fragment {
         View bottomSheet = view.findViewById(R.id.bottom_sheet);
         view.findViewById(R.id.answer_btn).setOnClickListener(v -> onAnswerBtnClicked());
         view.findViewById(R.id.next_btn).setOnClickListener(v -> onNextBtnClicked());
-        BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         descBtn.setOnClickListener(v -> mBottomSheetBehavior.setState(
                 (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                         ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
@@ -126,9 +127,9 @@ public class QuestionFragment extends Fragment {
         long id = currentQuestion.getId();
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
         QuestionDao questionDao = session.getQuestionDao();
-            if (isLastQuestion(questionDao)){
-                // TODO: 06.06.2016 Need show last question msg
-                Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
+        if (isLastQuestion(questionDao)) {
+            // TODO: 06.06.2016 Need show last question msg
+            Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
 
             return;
         }
@@ -137,8 +138,9 @@ public class QuestionFragment extends Fragment {
         bindData(currentQuestion);
 
     }
-    private boolean isLastQuestion(QuestionDao questionDao){
-        long id  = currentQuestion.getId();
+
+    private boolean isLastQuestion(QuestionDao questionDao) {
+        long id = currentQuestion.getId();
         long questionCount = questionDao.count();
         return id >= questionCount;
     }
@@ -158,7 +160,7 @@ public class QuestionFragment extends Fragment {
             checkBoxes.get(i).setText(answers.get(i).getBody());
             checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
         }
-        if(isAnswerClicked){
+        if (isAnswerClicked) {
             highlightAnswers();
         }
     }
@@ -173,6 +175,7 @@ public class QuestionFragment extends Fragment {
         descBtn.setAlpha(0);
         descBtn.setClickable(false);
         isAnswerClicked = false;
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
