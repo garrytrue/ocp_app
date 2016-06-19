@@ -49,18 +49,26 @@ public class StartFragment extends Fragment {
         DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
         QuestionDao questionDao = session.getQuestionDao();
         long lastQuestionId = questionDao.count();
-        long inputQuestionId;
-        if (TextUtils.isEmpty(qNumber.getText().toString())) {
-            inputQuestionId = 1;
-        } else {
-            inputQuestionId = Long.parseLong(qNumber.getText().toString());
-        }
-        Log.d(TAG, "onArrowClicked: LoastId " + lastQuestionId + " InputID " + inputQuestionId);
+        long inputQuestionId = getInputQuestionId();
+        Log.d(TAG, "onArrowClicked: LastId " + lastQuestionId + " InputID " + inputQuestionId);
         if (inputQuestionId > lastQuestionId) {
             errorAction(lastQuestionId);
             return;
         }
         startQuestionFragment(inputQuestionId);
+    }
+
+    private long getInputQuestionId() {
+        long inputQuestionId;
+        if (TextUtils.isEmpty(qNumber.getText().toString())) {
+            inputQuestionId = 1;
+        } else {
+            inputQuestionId = Long.parseLong(qNumber.getText().toString());
+            if(inputQuestionId == 0){
+                inputQuestionId = 1;
+            }
+        }
+        return inputQuestionId;
     }
 
     private void errorAction(long lastQuestionId) {
