@@ -1,1 +1,1 @@
-include ':app', ':dumploader'
+include ':app', ':dumploader', ':datagenerator'

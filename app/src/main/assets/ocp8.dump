@@ -63,7 +63,9 @@ E.- The code does not compile.
 F.- The code throws a runtime exception.
 Y: C. s1 points to the string pool. s2 points to an object on the heap, since it is created at runtime. == checks for reference equality. These are different references, making B incorrect. String overrides equals() so the actual values are the same, making C correct. And yes, this question could have appeared on the OCA. Remember that the OCP is cumulative. A question may appear to be about one thing and actually be about a simpler concept.
 ---4 chapter1
-Q: What is true about the following code? You may assume city and mascot are never null.
+Q: What is true about the following code?
+ You may assume city and mascot are never null.
+
 1:  public class BaseballTeam {
 2:      private String city, mascot;
 3:      private int numberOfPlayers;
@@ -84,7 +86,8 @@ C.+ The class compiles but has an improper hashCode() method.
 D.- The class compiles and has proper equals() and hashCode() methods.
 Y: C. The equals() method is correct. You are allowed to use any business logic that you want in determining equality. The hashCode() method is not correct. It violates the rule that two objects that return true for equals() must return the same hashCode(). It is also a bad idea for the hash code to contain values that could change.
 ---5 chapter1
-Q: Which of the following statements are true, assuming a and b are String objects? (Choose all that apply.)
+Q: Which of the following statements are true,
+ assuming a and b are String objects? (Choose all that apply.)
 A.+ If a.equals(b) is true, a.hashCode() == b.hashCode() is always true.
 B.- If a.equals(b) is true, a.hashCode() == b.hashCode() is sometimes but not always true.
 C.- If a.equals(b) is false, a.hashCode() == b.hashCode() can never be true.
@@ -108,7 +111,8 @@ E.- The code does not compile due to a missing semicolon.
 F.- The code does not compile for a different reason.
 Y: B. The ordinal() method of an enum returns its corresponding int value. Like arrays, enums are zero based. Remember that the index of an enum may change when you recompile the code and should not be used for comparison.
 ---7 chapter1
-Q: What is the result of the following code? (Choose all that apply.)
+Q: What is the result of the following code?
+ (Choose all that apply.)
 1:  public class IceCream {
 2:      enum Flavors {
 3:          VANILLA, CHOCOLATE, STRAWBERRY
@@ -176,7 +180,8 @@ E.- Line 11 generates a compiler error.
 F.- An exception is thrown.
 Y: B. Outer.this.x is the correct way to refer to x in the Outer class. In Java 7, the answer would have been D because you used to have to declare variables as final to use them in a local inner class. In Java 8, this requirement was dropped and the variables only need to be effectively final, which means that the code would still compile if final were added.
 ---10 chapter1
-Q: The following code appears in a file named Book.java. What is the result of compiling the source file ?
+Q: The following code appears in a file named Book.java.
+ What is the result of compiling the source file ?
 1:  public class Book {
 2:      private int pageNumber;
 3:      private class BookReader {
@@ -190,7 +195,8 @@ D.- A compiler error occurs on line 3.
 E.- A compiler error occurs on line 5.
 Y: C. The code compiles fine. A member inner class is allowed to be private, and it is allowed to refer to instance variables from the outer class. Two .class files are generated. Book.class matches the name of the outer class. The inner class does not compile to BookReader.class. That would introduce the possibility of a naming conflict. Book$BookReader.class is correct because it shows the scope of the class is limited to Book. You don’t need to know that $ is the syntax, but you do need to know the number of classes and that BookReader is not a top-level class.
 ---11 chapter1
-Q:  Which of the following statements can be inserted to make FootballGame compile?
+Q:  Which of the following statements can be
+ inserted to make FootballGame compile?
 1:  package my.sports;
 2:  public class Football {
 3:      public static final int TEAM_SIZE = 11;
@@ -263,7 +269,8 @@ E.- c instanceof Furry does not compile.
 F.- null instanceof Chipmunk does not compile.
 Y: B. c is an instance of Chipmunk. It is an instance of any superclasses or interfaces it imple- ments. In this case, those are Furry, Mammal, and Object. null is not an instance of any type. Therefore, the first two if statements execute and result is 3.
 ---14 chapter1
-Q: Which is a true statement about the following code? (Choose all that apply.)
+Q: Which is a true statement about the following code?
+ (Choose all that apply.)
 1:  import java.util. *;
 2:  public class IsItFurry {
 3:      static class Chipmunk { }
@@ -286,7 +293,8 @@ E.+ l instanceof Chipmunk does not compile.
 F.- r instanceof Chipmunk does not compile.
 Y: E. Code involving instanceof does not compile when there is no way for it to evaluate true. D not only compiles but it is always true. E does not compile because ArrayList is a concrete class that does not extend Chipmunk. F does compile because Runnable is an interface. In theory, someone could subclass Chipmunk and have the subclass implement Runnable.
 ---15 chapter1
-Q: Which of the following statements are true about the equals() method? (Choose all that apply.)
+Q: Which of the following statements are true
+ about the equals() method? (Choose all that apply.)
 A.- If equals(null) is called, the method should throw an exception.
 B.+ If equals(null) is called, the method should return false.
 C.- If equals(null) is called, the method should return true.
@@ -361,7 +369,9 @@ F.- true
 G.+ The code does not compile.
 Y: G. This question appears to be about enums but is really about abstract methods. Just as an abstract superclass requires concrete subclasses to have an implementation, abstract enum methods require each enum type to implement the method.
 ---19 chapter1
-Q: Which of the following can be inserted to override the superclass method? (Choose all that apply.)
+Q: Which of the following can be inserted
+ to override the superclass method?
+  (Choose all that apply.)
 1:  public class LearnToWalk {
 2:      public void toddle() {}
 3:      class BabyRhino extends LearnToWalk {
@@ -397,7 +407,8 @@ E.- The code does not compile.
 F.- A runtime exception is thrown.
 Y: C. Both objects are BabyRhino objects. Virtual method invocation says that the subclass method gets called at runtime rather than the type in the variable reference. However, we are not calling methods here. We are referring to instance variables. With instance vari- ables, the reference type does matter.
 ---21 chapter1
-Q: Which of the following could be inserted to fill in the blank? (Choose all that apply.)
+Q: Which of the following could be inserted
+ to fill in the blank? (Choose all that apply.)
 1:  public interface Otter {
 2:      default void play() { }
 3:  }
@@ -412,7 +423,9 @@ E.+ @Override public void play() { }
 F.- @Override void play() { }
 Y: A, C, E. Remember that @Override means that we are implementing a method from a superclass or interface. The Object class declares methods with the signatures in Options A and C. Granted, it is a poor implementation of equals(), but it does compile. Option E is also correct because the method is declared in Otter. Option F is incorrect because meth- ods from an interface are always public. Option B is incorrect because the parameter type does not match the one in Object. Option D is incorrect because the return type does not match the one in Object.
 ---1 chapter2
-Q: Which of the following statements about design principles and design patterns are true? (Choose all that apply.)
+Q: Which of the following statements
+ about design principles and design patterns are true?
+ (Choose all that apply.)
 A.- A design principle is focused on solving a specific commonly occurring problem.
 B.- Design principles and design patterns are the same thing.
 C.+ Design principles are often applied throughout an application, whereas design patterns are applied to solve specific problems.
@@ -439,7 +452,8 @@ E.+ The code will not compile because of line 8.
 F.- It compiles but throws an exception at runtime.
 Y: E. The code does not compile because EasternChipmunk inherits the abstract method climb() but does not implement it, therefore the correct answer is E. B, C, and D are incorrect as they compile for various reasons. Line 2 compiles, as non-static and non- default interface methods are assumed to have the abstract modifier. Line 4 compiles without issue as an interface can extend another interface. Line 5 compiles without issue as an abstract class can implement an interface without implementing any of the abstract methods. F is incorrect, as Line 8 does not compile.
 ---3 chapter2
-Q: Which of the following are valid functional interfaces? (Choose all that apply.)
+Q: Which of the following are valid functional interfaces?
+(Choose all that apply.)
 1:  public interface Climb {
 2:      public int climb();
 3:  }
@@ -457,7 +471,8 @@ D.+ MountainClimb
 E.- None of these are valid functional interfaces.
 Y: A, D. A is correct as Climb defines an interface with exactly one abstract method. B is incorrect, as abstract classes are not functional interfaces despite having a single abstract method. While functional interfaces may have any number of default methods, Arctic- MountainClimb will not compile due to the default method getSpeed() missing an implementation body, so C is incorrect. D is correct, as the interface MountainClimb has exactly one abstract method defined in Climb. Finally, E is incorrect because A and D are correct.
 ---4 chapter2
-Q: Which of the following are valid lambda expressions? (Choose all that apply.)
+Q: Which of the following are valid lambda expressions?
+(Choose all that apply.)
 A. () -> ""
 B. x,y -> x+y
 C. (Coyote y) -> return 0; D. (Camel c) -> {return;} E. Wolf w -> 39
@@ -465,7 +480,8 @@ F. () ->
 G. (Animal z, m) -> a
 Y: A, D. The first lambda expression is valid, taking no arguments and returning the empty string, so A is correct. B is incorrect, as more than one parameter requires parentheses (). C is incorrect, as brackets {} are required when using return. D is correct, as the expres- sion takes one Camel input and returns void. E is incorrect, as parentheses are required when using the data type Wolf. F is incorrect, as it has no right-side expression. Finally, G is incorrect, as specifying the data type for one parameter in a lambda expression requires you to specify the data type for all parameters in the expression. In this case, z has a data type and m does not, therefore the expression is invalid.
 ---5 chapter2
-Q: What are some of the properties of using the singleton pattern? (Choose all that apply.)
+Q: What are some of the properties of using the singleton pattern?
+(Choose all that apply.)
 A.- Singleton object can be replaced with encapsulated setter method.
 B.+ Requires constructor of singleton class to be private.
 C.- Singleton object must be named instance.
@@ -496,7 +512,8 @@ E.- Compile error on line h3.
 F.- A runtime exception is thrown.
 Y: A. This code compiles and runs without issue so C, D, E, and F are incorrect. Line h1 cre- ates a lambda expression that checks if the age is less than 5. Since there is only one param- eter and it does not specify a type, the parentheses around the type parameter are optional. Line h2 uses the Predicate interface, which declares a test() method. Since test() returns true on the expression, match is output and A is correct.
 ---7 chapter2
-Q: What changes need to be made to make the following immutable object pattern correct? (Choose all that apply.)
+Q: What changes need to be made to make the following
+immutable object pattern correct? (Choose all that apply.)
 1:  import java.util.List;
 2:  public class Seal {
 3:      String name;
@@ -518,7 +535,8 @@ G.+ Make a copy of the List<Seal> friends in the constructor.
 H.+ Mark the Seal class final.
 Y: C, E, G, H. A is incorrect, as there are definitely some problems with the immutable objects implementation. B is incorrect, as there is no such thing as the Immutable inter- face defined in the Java API. C is correct, as all instance variables should be private and final to prevent them from being changed by a caller. D is incorrect, as adding settings is the opposite of what you do with the immutable object pattern. E is correct, since List<Seal> is mutable, all direct access should be removed. F is incorrect, as this has nothing to do with immutability. G is correct, as we need to copy the mutable List<Seal> to prevent the caller of the constructor from maintaining access to a mutable structure within our class. H is also correct, as it prevents the methods of the class from being overridden.
 ---8 chapter2
-Q: Which of the following are true of interfaces? (Choose all that apply.)
+Q: Which of the following are true of interfaces?
+(Choose all that apply.)
 A.- They can extend other classes.
 B.- They cannot be extended.
 C.+ They enable classes to have multiple inheritance.
@@ -527,7 +545,8 @@ E.- They can be declared final.
 F.+ All members of an interface are public.
 Y: C, F. A and B are both incorrect as interfaces can extend other interfaces, although not classes. C is correct since a class may implement multiple interfaces. D is incorrect as inter- faces have static and default methods, as well as static final variables. E is incor- rect as interfaces are assumed to be abstract, and abstract and final can never be used together. F is correct as interface methods and variables are each assumed public.
 ---9 chapter2
-Q: What changes need to be made to make the following singleton pattern correct? (Choose all that apply.)
+Q: What changes need to be made to make the following
+singleton pattern correct? (Choose all that apply.)
 1:  public class CheetahManager {
 2:      public static CheetahManager cheetahManager;
 3:      private CheetahManager() {}
@@ -562,9 +581,10 @@ B.- The code will not compile because of line 5.
 C.- The code will not compile because of line 6.
 D.+ The code will not compile because of line 8.
 E.- The code will not compile because of line 9.
-Y: D.WhileJavasupportsmultipleinheritancethroughinterfaces,itdoesnotsupportmethod overriding in interfaces, since it’s not clear which parent method should be used. In this example, CanWalk and CanRun both implement a default walk() method. The definition of CanSprint extends these two interfaces and therefore won’t compile as two default meth- ods with the same signature from parent classes are detected, therefore the answer is D. None of the other lines of code cause problems, so the rest of the answers are not correct.
+Y: D.While Java supports multiple inheritance through interfaces,it does not support method overriding in interfaces, since it’s not clear which parent method should be used. In this example, CanWalk and CanRun both implement a default walk() method. The definition of CanSprint extends these two interfaces and therefore won’t compile as two default meth- ods with the same signature from parent classes are detected, therefore the answer is D. None of the other lines of code cause problems, so the rest of the answers are not correct.
 ---11 chapter2
-Q: Which lambda can replace the MySecret class to return the same value? (Choose all that apply.)
+Q: Which lambda can replace the MySecret
+class to return the same value? (Choose all that apply.)
 1:  public interface Secret {
 2:      String magic(double d);
 3:  }
@@ -602,7 +622,9 @@ E.- Compiler error on a different line.
 F.- A runtime exception is thrown.
 Y: C. The functional interface takes two int parameters. The code on line x1 attempts to use them as if one is an Object, resulting in a compiler error making C the correct answer. It also tries to return String even though the data type for the functional interface method is boolean. It is tricky to use types in a lambda when they are implicitly specified. Remember to check the interface for the real type.
 ---13 chapter2
-Q: Which of the following are properties of classes that define immutable objects? (Choose all that apply.)
+Q: Which of the following are properties of
+classes that define immutable objects?
+(Choose all that apply.)
 A.- They don’t define any getter methods.
 B.+ All of the instance variables marked private and final.
 C.+ They don’t define any setter methods.
@@ -611,7 +633,9 @@ E.+ They prevent methods from being overridden.
 F.- All getter methods are marked synchronized.
 Y: B, C, E. Immutable objects may not be modified after creation. B, C, and E are correct statements that support this property. A is incorrect, as immutable objects may have get- ter methods, just not setter methods. D is incorrect, as static methods are not part of the immutable object pattern. F is also incorrect, as the getter methods are not required to be marked synchronized.
 ---14 chapter2
-Q: Which of the following statements can be inserted in the blank line so that the code will compile successfully? (Choose all that apply.)
+Q: Which of the following statements can be
+inserted in the blank line so that the code
+will compile successfully? (Choose all that apply.)
 1:  public interface CanHop {}
 2:  public class Frog implements CanHop {
 3:      public static void main(String[] args) {
@@ -628,7 +652,8 @@ E.+ Object
 F.- Long
 Y: A, B, D, E. The blank can be filled with any class or interface that is a supertype of Tur- tleFrog. A is a superclass of TurtleFrog, and B is the same class, so both are correct. BrazilianHornedFrog is not a superclass of TurtleFrog, so C is incorrect. TurtleFrog inherits the CanHop interface, so D is correct. All classes inherit Object, so E is correct. Finally, Long is an unrelated class that is not a superclass of TurtleFrog, and it is therefore incorrect.
 ---15 chapter2
-Q: Which of the following statements about polymorphism are true? (Choose all that apply.)
+Q: Which of the following statements about polymorphism are true?
+(Choose all that apply.)
 A.- A reference to an object may be cast to a subclass of the object without an explicit cast.
 B.+ If a method takes a class that is the superclass of three different object references, then any of those objects may be passed as a parameter to the method.
 C.+ A reference to an object may be cast to a superclass of the object without an explicit cast.
@@ -652,7 +677,9 @@ E.- The code will not compile because of lines 2 and 3.
 F.+ The code will not compile because of lines 3 and 4.
 Y: F. The interface variable amount is correctly declared, with public, static, and final being assumed and automatically inserted by the compiler, so B is incorrect. The method declaration for eatGrass() on line 3 is incorrect because the method has been marked as static but no method body has been provided. The method declaration for chew() on line 4 is also incorrect, since an interface method that provides a body must be marked as default or static explicitly. Therefore, F is the correct answer since this code contains two compile-time errors.
 ---17 chapter2
-Q: Which of the following are properties of classes that are properly encapsulated as a JavaBean? (Choose all that apply.)
+Q: Which of the following are properties of
+ classes that are properly encapsulated
+ as a JavaBean? (Choose all that apply.)
 A.- All instance variables are marked final.
 B.+ boolean instance variables are accessed with is or get.
 C.+ All instance variables are marked private.
@@ -661,7 +688,8 @@ E.- Variables are created using lazy instantiation.
 F.+ The first letter of the any getter/setter, after the get, set, or is prefix, must be uppercase.
 Y: B, C, F. Options B, C, and F are each correct statements about JavaBean encapsulation. A is incorrect, as that is a property of the immutable object pattern, not encapsulation. D is incorrect, as there is no such JavaBean interface defined in the Java API. Finally, E is incorrect, as handling instantiation is not part of encapsulation.
 ---18 chapter2
-Q: Which of the following statements about inheritance and object composition are correct? (Choose all that apply.)
+Q: Which of the following statements about
+inheritance and object composition are correct? (Choose all that apply.)
 A.+ Inheritance supports access to protected variables.
 B.+ Object composition tends to promote greater code reuse than inheritance.
 C.- Inheritance relies on the has‐a principle.
@@ -670,7 +698,8 @@ E.+ Object composition requires a class variable to be declared public or access
 F.- Object composition is always preferred to inheritance.
 Y: A, B, E. A is correct, and it is one of the reasons to prefer class inheritance over object composition. B is also correct, since object composition tends to lead to classes that are easier to reference, as they don’t require knowledge of any parent classes. C is incorrect, as inheritance tends to use the is-a principle, whereas object composition relies on the has-a principle. D is incorrect, as this is a statement about inheritance, not object composition. E is correct, as object composition has no notion of inheritance and variables must be exposed publically if they are to be used by other classes in different packages. F is incor- rect, as neither are always the right answer. There are situations where inheritance is more appropriate, and situations where object composition is more appropriate.
 ---19 chapter2
-Q: Which three scenarios would best benefit from using a singleton pattern? (Choose all three.)
+Q: Which three scenarios would best benefit
+from using a singleton pattern? (Choose all three.)
 A.- Create read‐only objects that are thread‐safe.
 B.+ Manage a reusable cache of objects.
 C.- Ensure that all objects are lazily instantiated.
@@ -696,14 +725,23 @@ E.- The code will not compile because of lines 2 and 5.
 F.- The code will not compile because the class Falcon doesn’t implement the interface methods.
 Y: A. Although the definition of methods on lines 2 and 5 vary, both will be converted to public abstract by the compiler. Line 4 is fine, because an interface can have public or default access. Finally, the class Falcon doesn’t need to implement the interface methods because it is marked as abstract. Therefore, the code will compile without issue.
 ---1 chapter3
-Q: Suppose that you have a collection of products for sale in a database and you need to display those products. The products are not unique. Which of the following collections classes in the java.util package best suit your needs for this scenario?
+Q: Suppose that you have a collection of products
+for sale in a database and you need to display those products.
+The products are not unique.
+Which of the following collections classes in
+the java.util package best suit your needs for this scenario?
 A.- Arrays
 B.+ ArrayList
 C.- HashMap
 D.- HashSet
 E.- LinkedList
 Y: B. The answer needs to implement List because the scenario allows duplicates. Since you need a List, you can eliminate C, D, and E immediately. HashMap is a Map and HashSet is a Set. LinkedList is both a List and a Queue. You want a regular List. Option A, Arrays, is trying to distract you. It is a utility class rather than a Collection. An array is not a col- lection. By process of elimination, the answer is B.
-Q: Suppose that you need to work with a collection of elements that need to be sorted in their natural order, and each element has a unique string associated with its value. Which of the following collections classes in the java.util package best suit your needs for this scenario?
+---2 chapter3
+Q: Suppose that you need to work with a collection of elements
+ that need to be sorted in their natural order,
+ and each element has a unique string associated with its value.
+ Which of the following collections classes in the java.util package
+ best suit your needs for this scenario?
 A.- ArrayList
 B.- HashMap
 C.- HashSet
@@ -711,6 +749,7 @@ D.+ TreeMap
 E.- TreeSet
 F.- Vector
 Y: D. The answer needs to implement Map because you are dealing with key/value pairs per the unique string text. You can eliminate A, C, E, and F immediately. ArrayList and Vector are Lists. HashSet and TreeSet are Sets. Now it is between HashMap and TreeMap. Since the question talks about ordering, you need the TreeMap. Therefore, the answer is E.
+---3 chapter3
 Q: What is the result of the following statements?
 3: List list = new ArrayList();
 4: list.add("one");
@@ -724,6 +763,7 @@ C.- onetwo followed by an exception
 D.- Compiler error on line 6
 E.+ Compiler error on line 7
 Y: E. The code does not compile. It attempts to mix generics and legacy code. Lines 3 through 7 create an ArrayList without generics. This means that we can put any objects in it. Line 7 should be looping through a list of Objects rather than Strings since we didn’t use generics.
+---4 chapter3
 Q: What is the result of the following statements?
 3: ArrayDeque<String> greetings = new ArrayDeque<String>();
 4: greetings.push("hello");
@@ -741,6 +781,7 @@ E. hihello
 F. The code does not compile.
 F. An exception is thrown.
 Y: E. Since we call push() rather than offer(), we are treating the ArrayDeque as a LIFO (last-in, first-out) stack. On line 7, we remove the last element added, which is "ola". On line 8, we look at the new last element ("hi"), but don’t remove it. Lines 9 and 10, we remove each element in turn until none are left. Note that we don’t use an Iterator to loop through the ArrayDeque. The order in which the elements are stored internally is not part of the API contract.
+---5 chapter3
 Q: Which of these statements compile? (Choose all that apply.)
 A.- HashSet<Number> hs = new HashSet<Integer>();
 B.+ HashSet<? super ClassCastException> set = new HashSet<Exception>();
@@ -749,6 +790,7 @@ D.- List<Object> values = new HashSet<Object>();
 E.- List<Object> objects = new ArrayList<? extends Object>();
 F.+ Map<String, ? extends Number> hm = new HashMap<String, Integer>();
 Y: B, C, F. Option A does not compile because the generic types are not compatible. We could say HashSet<? extends Number> hs2 = new HashSet<Integer>();. Option B uses a lower bound, so it allows superclass generic types. Option C is a traditional use of generics where the generic type is the same and the List type uses the interface as the type. Option D does not compile because a Set is not a List. Option E does not compile because upper bounds are not allowed when instantiating the type. Finally, Option F does compile because the upper bound is on the correct side of =.
+---6 chapter3
 Q: What is the result of the following code?
 1:  public class Hello<T> {
 2:      T t;
@@ -765,6 +807,7 @@ D.- Compiler error on line 4
 E.- Compiler error on line 6
 F.- Compiler error on line 7
 Y: C. Line 7 gives a compiler warning for not using generics but not a compiler error. Line 4 compiles fine because toString() is defined on the Object class and is therefore always available to call. Line 6 creates the Hello class with the generic type String. Line 7 creates the Hello class with the generic type Object since no type is specified.
+---7 chapter3
 Q: Which of the following statements are true? (Select two.)
 3:  Set<Number> numbers = new HashSet<>();
 4:  numbers.add(new Integer(86));
@@ -783,6 +826,7 @@ E.- There is a compiler error on line 3.
 F.- There is a compiler error on line 9.
 G. An exception is thrown.
 Y: A, D. The code compiles fine. It uses the diamond operator, and it allows any implementation of Number to be added. HashSet does not guarantee any iteration order, making A and D correct.
+---8 chapter3
 Q: What is the result of the following code?
 1: TreeSet<String> tree = new TreeSet<String>();
 2: tree.add("one");
@@ -796,6 +840,7 @@ D.- ONE
 E.- The code does not compile.
 F.- An exception is thrown.
 Y: C. TreeSet sorts the elements. Since uppercase letters sort before lowercase letters, the ordering is "ONE", "One", "one". The ceiling() method returns the smallest element greater than the specified one. "On" appears between "ONE" and "One". Therefore, the smallest element that is larger than the specified value is "One".
+---9 chapter3
 Q: Which of the answer choices are valid given the following declaration?
 1: Map<String, Double> map = new HashMap<>();
 A.- map.add("pi", 3.14159);
@@ -804,6 +849,7 @@ C.- map.add("log(1)", new Double(0.0));
 D.- map.add('x', new Double(123.4));
 E.+ None of the above
 Y: E. Trick question! The Map interface uses put() rather than add() to add elements to the map. If these examples used put(), the answer would be A and C. B is no good because a long cannot be shoved into a Double. D is no good because a char is not the same thing as a String.
+---10 chapter3
 Q: What is the result of the following program? import java.util.*;
 1: public class MyComparator implements Comparator<String> {
 2:   public int compare(String a, String b) {
@@ -823,6 +869,7 @@ D.- 123 aab Abb
 E.- The code does not compile.
 F.- A runtime exception is thrown.
 Y: A. The array is sorted using MyComparator, which sorts the elements in reverse alphabeti- cal order in a case-insensitive fashion. Normally, numbers sort before letters. This code reverses that by calling the compareTo() method on b instead of a.
+---11 chapter3
 Q: What is the result of the following code?
 1: Map<Integer, Integer> map = new HashMap<>(10);
 2: for (int i = 1; i <= 10; i++) {
@@ -836,7 +883,10 @@ D.- Compiler error on line 5.
 E.- Compiler error on line 7.
 F.- A runtime exception is thrown.
 Y: A. Line 3 uses the diamond operator to create the map. Lines 5 and 7 use autoboxing to convert between the int primitive and the Integer wrapper class. The keys map to their squared value. 1 maps to 1, 2 maps to 4, 3 maps to 9, 4 maps to 16, and so on.
-Q: Which of these statements can fill in the blank so that the Helper class compiles successfully? (Choose all that apply.)
+---12 chapter3
+Q: Which of these statements can fill in the blank
+ so that the Helper class compiles successfully?
+ (Choose all that apply.)
 3:  public class Helper {
 4:      public static <U extends Exception> void printException(U u) {
 5:          System.out.println(u.getMessage());
@@ -850,7 +900,10 @@ C.- Helper.<Throwable>printException(new Exception("C"));
 D.+ Helper.<NullPointerException>printException(new NullPointerException ("D"));
 E.- Helper.printException(new Throwable("E"));
 Y: A, B, D. The generic type must be Exception or a subclass of Exception since this is an upper bound. C and E are wrong because Throwable is a superclass of Exception. D uses an odd syntax by explicitly listing the type, but you should be able to recognize it as acceptable.
-Q: Which of these statements can fill in the blank so that the Wildcard class compiles successfully? (Choose all that apply.)
+---13 chapter3
+Q: Which of these statements can fill in the blank
+so that the Wildcard class compiles successfully?
+(Choose all that apply.)
 1:   import java.util.*;
 2:   public class Wildcard {
 3:     public void showSize(List<?> list) {
@@ -868,6 +921,7 @@ D.- List<Exception> list = new LinkedList<java.io.IOException>();
 E.+ Vector<? extends Number> list = new Vector<Integer>();
 F.- None of the above
 Y: B, E. showSize() can take any type of List since it uses an unbounded wildcard. Option A is incorrect because it is a Queue and not a List. Option C is incorrect because the wild- card is not allowed to be on the right side of an assignment. Option D is incorrect because the generic types are not compatible. Option B is correct because a lower-bounded wildcard allows that same type to be the generic. Option E is correct because Integer is a subclass of Number. Vector is an old type of List. It isn’t common in new code, but you still need to know it for the exam and in case you encounter old code.
+---14 chapter3
 Q: What is the result of the following program?
 1:   import java.util.*;
 2:   public class Sorted implements Comparable<Sorted>, Comparator<Sorted> {
@@ -904,6 +958,7 @@ D.- [88. 55] [88, 55]
 E.- The code does not compile.
 F.- A runtime exception is thrown.
 Y: C. This question is hard because it defines both Comparable and Comparator on the same object. t1 doesn’t specify a Comparator so it uses the Comparable object’s compareTo() method. This sorts by the text instance variable. t2 did specify a Comparator when calling the constructor, so it uses the compare() method, which sorts by the int.
+---15 chapter3
 Q: What is the result of the following code?
 1:  Comparator<Integer> c = (o1, o2) -> o2—o1;
 2:  List<Integer> list = Arrays.asList(5, 4, 7, 1);
@@ -916,7 +971,8 @@ D.+ The result is undefined.
 E.- The code does not compile.
 F.- A runtime exception is thrown.
 Y: D. The list is sorted in descending order. However, it is searched using the default order, which is sorted in ascending order. binarySearch() requires both to use the same sort order. Therefore, the precondition for binarySearch() is not met and the result is undefined.
-Q: Which of the following statements are true? (Choose all that apply.)
+Q: Which of the following statements are true?
+(Choose all that apply.)
 A.- Comparable is in the java.util package.
 B.+ Comparator is in the java.util package.
 C.- compare() is in the Comparable interface.
@@ -924,7 +980,9 @@ D.+ compare() is in the Comparator interface.
 E.- compare() takes one method parameter.
 F.+ compare() takes two method parameters.
 Y: B, D, F. The java.lang.Comparable interface is implemented on the object to com- pare. It specifies the compareTo() method, which takes one parameter. The java. util.Comparator interface specifies the compare() method, which takes two parameters.
-Q: Which two options can fill in the blanks to make this code compile? (Choose all that apply.)
+---16 chapter3
+Q: Which two options can fill in the blanks
+to make this code compile? (Choose all that apply.)
 1:  public class Generic________ {
 2:      public static void main(String[] args) {
 3:          Generic<String> g = new Generic_______();
@@ -938,7 +996,9 @@ D.+ On line 3, fill in with <>.
 E.- On line 3, fill in with <T>.
 F.- On line 3, fill in with <?>.
 Y: B, D. Line 1 is a generic class that requires specifying a name for the type. Options A and C are incorrect because no type is specified. Line 3 tries to use the diamond operator to instantiate the class. Option E is incorrect because T is not a class and certainly not one compatible with String. Option F is incorrect because a wildcard cannot be specified on the right side when instantiating an object.
-Q: Which of the following lines can be inserted to make the code compile?(Choose all that apply.)
+---17 chapter3
+Q: Which of the following lines can be inserted
+to make the code compile?(Choose all that apply.)
 1:  class A {}
 2:  class B extends A {}
 3:  class C extends B {}
@@ -952,7 +1012,9 @@ D.- C c1 = new A();
 E.- C c2 = new B();
 F.- C c1 = new C();
 Y: A, B. C is both a class and a type parameter. This means that within the class D, when we refer to C, it uses the type parameter. All of the choices that mention class C are incorrect because it no longer means the class C.
-Q: Which options are true of the following code? (Choose all that apply.)
+---18 chapter3
+Q: Which options are true of the following code?
+ (Choose all that apply.)
 3: ______________<Integer> q = new LinkedList<>();
 4: q.add(10);
 5: q.add(12);
@@ -977,7 +1039,8 @@ D.- Compiler error on line 5.
 E.+ Compiler error on line 7.
 F.- A runtime exception is thrown.
 Y: E. This question looks like it is about generics, but it’s not. It is trying to see if you noticed that Map does not have a contains() method. It has containsKey() and containsValue() instead. If containsKey() was called, the answer would be false because the 123 in the list is an Integer rather than a String.
-Q: Fill in the blanks to make this code compile and print 123. (Choose all that apply.)
+Q: Fill in the blanks to make this code compile and print 123.
+ (Choose all that apply.)
 4: List<String> list = Arrays.asList("1", "2", "3");
 5: Iterator iter = list.iterator();
 6: while(iter.__________())
@@ -989,6 +1052,7 @@ D.- On line 7, fill in the blank with getNext().
 E.- On line 7, fill in the blank with hasNext().
 F.+ On line 7, fill in the blank with next().
 Y: A, F. You have to memorize this. hasNext() returns a boolean, and it is used in the loop. next() returns the next element.
+---19 chapter3
 Q: What code change is needed to make the method compile?
 1:  public static T identity(T t) {
 2:      return t;
@@ -1007,7 +1071,9 @@ C.- remove method on a Collection
 D.- removeAll method on a Collection
 E.+ removeIf method on a Collection
 Y: B, E. Both Comparator and Comparable are functional interfaces. However, Comparable is intended to be used on the object being compared, making choice B correct. removeIf was added in Java 8 to allow specifying the lambda to check when removing elements, making choice E correct.
-Q: Which of the following compiles and print outs the entire set? (Choose all that apply.)
+---20 chapter3
+Q: Which of the following compiles and print outs the entire set?
+ (Choose all that apply.)
 1: Set<String> s = new HashSet<>();
 2: s.add("lion");
 3: s.add("tiger");
@@ -1020,6 +1086,7 @@ D.- System.out.println(s)
 E.- System::out::println
 F.+ System.out::println
 Y: F. Choice A is incorrect because forEach takes a Consumer parameter, which requires one parameter. Choices B and C are close. The syntax for a lambda is correct. However, s is already defined as a local variable and therefore the lambda can’t redefine it. Choices D and E use incorrect syntax for a method reference. Choice F is correct.
+---21 chapter3
 Q: What is the result of the following?
 1: Map<Integer, Integer> map = new HashMap<>();
 2: map.put(1, 10);
