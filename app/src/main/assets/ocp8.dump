@@ -65,7 +65,6 @@ Y: C. s1 points to the string pool. s2 points to an object on the heap, since it
 ---4 chapter1
 Q: What is true about the following code?
  You may assume city and mascot are never null.
-
 1:  public class BaseballTeam {
 2:      private String city, mascot;
 3:      private int numberOfPlayers;
@@ -1233,16 +1232,16 @@ Q: What changes need to be made for this code to print the string 12345? (Choose
 4:         .collect(Collectors. joining());
 A.- Change Collectors.joining() to Collectors.joining("").
 B.+ Change map(x -> x)to map(x -> "" + x).
-C.+ Changex -> x++tox -> ++x.
+C.+ Change x -> x++tox -> ++x.
 D.- Add forEach(System.out::print) after the call to collect().
 E.+ Wrap the entire line in a System.out.print statement.
 F.- None of the above. The code already prints 12345.
 Y: B, C, E. As written, the code doesn’t compile because the collector expects to get a String immediately before it in the chain. Option B fixes this, at which point nothing is output because the collector creates a String. Option E fixes this and causes the output to be 11111. Since the post-increment operator is used, the stream contains an infinite number of 1s. Option C fixes this and causes the stream to contain increasing numbers.
 ---12 chapter4
 Q: Which functional interfaces complete the following code? (Choose all that apply.)
-6: ____________ x = String::new;
-7: ____________ y = (a, b) -> System.out.println();
-8: ____________ z = a -> a + a;
+6: x = String::new;
+7: y = (a, b) -> System.out.println();
+8: z = a -> a + a;
 A.+ BiConsumer<String, String>
 B.- BiFunction<String, String>
 C.- BinaryConsumer<String, String>
