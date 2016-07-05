@@ -5,8 +5,8 @@
 com_crashlytics_export_strings.xml
 
 # Local configuration file (sdk path, etc)
-#local.properties
-#gradle.properties
+local.properties
+gradle.properties
 #settings.gradle
 
 # Gradle generated files
@@ -46,3 +46,5 @@ build/
 #datagenerator/libs/
 #build.gradle
 #libs/
+datagenerator/libs/
+gen/
