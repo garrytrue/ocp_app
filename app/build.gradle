@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.sonarqube'
+apply plugin: 'com.neenbedankt.android-apt'
 
 sonarqube{
     properties{
@@ -38,23 +39,23 @@ android {
         }
     }
 }
+        ext{
+            ANDROID_SUPPORT_LIB = '23.4.0'
+            GREEN_DAO_VERSION = '2.2.1'
+            DAGGER_VERSION = '2.5'
+        }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project (':dumploader')
     testCompile 'junit:junit:4.12'
 
-    ext.supportLibVer = '23.4.0'
-    compile "com.android.support:appcompat-v7:$supportLibVer"
-    compile "com.android.support:design:$supportLibVer"
-    compile "com.android.support:support-v4:$supportLibVer"
-
-//    ext.supportLibVer = '1.1.0'
-//    compile "io.reactivex:rxandroid:$supportLibVer"
-//    compile "io.reactivex:rxjava:$supportLibVer"
-
-
+    compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIB"
+    compile "com.android.support:design:$ANDROID_SUPPORT_LIB"
+    compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIB"
     compile 'me.tatarka:gradle-retrolambda:3.3.0-beta3'
-    compile 'org.greenrobot:greendao:2.2.1'
-
-    compile project (':dumploader')
+    compile "org.greenrobot:greendao:$GREEN_DAO_VERSION"
+    compile "com.google.dagger:dagger:$DAGGER_VERSION"
+    apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    testApt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 }
