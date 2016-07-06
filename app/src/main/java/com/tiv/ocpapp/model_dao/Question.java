@@ -1,5 +1,9 @@
 package com.tiv.ocpapp.model_dao;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.tiv.ocpapp.model_dao.DaoSession;
 import de.greenrobot.dao.DaoException;
@@ -8,7 +12,7 @@ import de.greenrobot.dao.DaoException;
 /**
  * Entity mapped to table "QUESTION".
  */
-public class Question {
+public class Question implements Parcelable {
 
     private Long id;
     private String text;
@@ -111,4 +115,36 @@ public class Question {
         myDao.refresh(this);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.text);
+        dest.writeString(this.description);
+        dest.writeList(this.answers);
+    }
+
+    protected Question(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.text = in.readString();
+        this.description = in.readString();
+        this.answers = new ArrayList<Answer>();
+        in.readList(this.answers, Answer.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>() {
+        @Override
+        public Question createFromParcel(Parcel source) {
+            return new Question(source);
+        }
+
+        @Override
+        public Question[] newArray(int size) {
+            return new Question[size];
+        }
+    };
 }

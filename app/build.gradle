@@ -3,13 +3,13 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.neenbedankt.android-apt'
 
-sonarqube{
-    properties{
-        property "sonar.projectName", (String)android.defaultConfig.applicationId
+sonarqube {
+    properties {
+        property "sonar.projectName", (String) android.defaultConfig.applicationId
         property "sonar.projectKey", android.defaultConfig.applicationId + android.defaultConfig.versionName
-        property "sonar.sourceEncoding","UTF-8"
-        property "sonar.sources","./src/"
-        property "sonar.exclusions","build/**,**/*.png,*.iml"
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.sources", "./src/"
+        property "sonar.exclusions", "build/**,**/*.png,*.iml"
         property "sonar.import_unknown_files", true
         property "sonar.android.lint.report", "./build/outputs/lint-results.xml"
         property "sonar.host.url", "http://localhost:9000"
@@ -39,15 +39,15 @@ android {
         }
     }
 }
-        ext{
-            ANDROID_SUPPORT_LIB = '23.4.0'
-            GREEN_DAO_VERSION = '2.2.1'
-            DAGGER_VERSION = '2.5'
-        }
+ext {
+    ANDROID_SUPPORT_LIB = '23.4.0'
+    GREEN_DAO_VERSION = '2.2.1'
+    DAGGER_VERSION = '2.5'
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project (':dumploader')
+    compile project(':dumploader')
     testCompile 'junit:junit:4.12'
 
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIB"

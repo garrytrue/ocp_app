@@ -18,16 +18,21 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tiv.ocpapp.R;
-import com.tiv.ocpapp.app.OcpApplication;
+import com.tiv.ocpapp.di.components.DaggerQuestionViewComponent;
+import com.tiv.ocpapp.di.modules.QuestionViewModule;
 import com.tiv.ocpapp.model_dao.Answer;
-import com.tiv.ocpapp.model_dao.DaoSession;
 import com.tiv.ocpapp.model_dao.Question;
 import com.tiv.ocpapp.model_dao.QuestionDao;
+import com.tiv.ocpapp.ui.mvp.presenters.QuestionFragmentPresenter;
+import com.tiv.ocpapp.ui.mvp.views.IQuestionView;
+import com.tiv.ocpapp.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestionFragment extends Fragment {
+import javax.inject.Inject;
+
+public class QuestionFragment extends Fragment implements IQuestionView {
     public static final String TAG = QuestionFragment.class.getSimpleName();
     private static final String QUESTION_NUMBER = "question_number";
     private static final int DEFAULT_CHECK_BOX_COUNT = 8;
@@ -40,6 +45,9 @@ public class QuestionFragment extends Fragment {
     private final List<CompoundButton> selectedItems = new ArrayList<>();
     private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
     private BottomSheetBehavior mBottomSheetBehavior;
+    @Inject
+    QuestionFragmentPresenter questionFragmentPresenter;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -81,11 +89,12 @@ public class QuestionFragment extends Fragment {
         (getActivity()).setTitle(getString(R.string.app_name));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         initUI(view);
+        DaggerQuestionViewComponent.builder().questionViewModule(new QuestionViewModule()).build().inject(this);
+        questionFragmentPresenter.onCreate(this);
         if (currentQuestion == null) {
             Log.d(TAG, "onViewCreated: Current Question is Null");
-            bindData(loadData(currentQuestionNumber));
+            questionFragmentPresenter.loadQuestionById(currentQuestionNumber);
         } else {
             Log.d(TAG, "onViewCreated: Current Question is not Null");
             bindData(currentQuestion);
@@ -125,17 +134,15 @@ public class QuestionFragment extends Fragment {
 
     private void onNextBtnClicked() {
         long id = currentQuestion.getId();
-        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        QuestionDao questionDao = session.getQuestionDao();
-        if (isLastQuestion(questionDao)) {
-            // TODO: 06.06.2016 Need show last question msg
-            Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
-
-            return;
-        }
-        currentQuestion = questionDao.load(++id);
-        isAnswerClicked = false;
-        bindData(currentQuestion);
+//        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
+//        QuestionDao questionDao = mRepositoryModule.provideDaoSession().getQuestionDao();
+//        if (isLastQuestion(questionDao)) {
+//            Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
+//            return;
+//        }
+//        currentQuestion = questionDao.load(++id);
+//        isAnswerClicked = false;
+//        bindData(currentQuestion);
 
     }
 
@@ -172,8 +179,7 @@ public class QuestionFragment extends Fragment {
         }
         resetCheckBoxesState(checkBoxes);
         selectedItems.clear();
-        descBtn.setAlpha(0);
-        descBtn.setClickable(false);
+        switchBottomBtnState(false);
         isAnswerClicked = false;
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
@@ -186,24 +192,6 @@ public class QuestionFragment extends Fragment {
         }
     }
 
-    private Question loadData(long id) {
-        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-        QuestionDao questionDao = session.getQuestionDao();
-        currentQuestion = questionDao.load(id);
-        return currentQuestion;
-    }
-
-//    private int getQuestionDbId(String id) {
-//        int dbId;
-//        try {
-//            dbId = Integer.parseInt(id);
-//        } catch (NumberFormatException ex) {
-//            Log.e(TAG, "getQuestionDbId: ", ex);
-//            dbId = 1;
-//        }
-//        return dbId;
-//    }
-
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
         if (isChecked) {
             selectedItems.add(button);
@@ -213,13 +201,12 @@ public class QuestionFragment extends Fragment {
     }
 
     private void onAnswerBtnClicked() {
+        questionFragmentPresenter.onAnswerAction();
         isAnswerClicked = true;
         if (!selectedItems.isEmpty()) {
             highlightAnswers();
-            descBtn.setClickable(true);
-            descBtn.animate().alpha(1).setDuration(1000).start();
+            switchBottomBtnState(true);
         } else {
-            // TODO: 02.06.2016 Need show warning
             Snackbar.make(rootLayout, R.string.msg_answers_not_selected, Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -244,6 +231,46 @@ public class QuestionFragment extends Fragment {
             cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
+        }
+    }
+
+    @Override
+    public void onNextAction(long nextId) {
+
+    }
+
+    @Override
+    public void showError(@Constants.Error String error) {
+        switch (error) {
+            case Constants.ERROR_ANSWER_NOT_SELECTED:
+                Snackbar.make(rootLayout, R.string.msg_answers_not_selected, Snackbar.LENGTH_SHORT).show();
+                break;
+            case Constants.ERROR_LAST_QUESTION:
+                Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
+                break;
+            default:
+                throw new IllegalArgumentException("Not supported params");
+        }
+
+    }
+
+    @Override
+    public void loadQuestionById(long id) {
+        questionFragmentPresenter.loadQuestionById(id);
+    }
+
+    @Override
+    public void updateData(Question data) {
+        bindData(data);
+    }
+
+    public void switchBottomBtnState(boolean isActive) {
+        descBtn.clearAnimation();
+        descBtn.setClickable(isActive);
+        if (isActive) {
+            descBtn.animate().alpha(1).setDuration(500).start();
+        } else {
+            descBtn.animate().alpha(0).setDuration(500).start();
         }
     }
 }

@@ -1,51 +1,37 @@
 package com.tiv.ocpapp.app;
 
 import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
-import com.example.model.Question;
-import com.example.service.LoadOcpDumpTextStructureImpl;
-import com.example.service.LoadOcpDumper;
-import com.tiv.ocpapp.fake_data.FakeDataGenerator;
-import com.tiv.ocpapp.model_dao.DaoMaster;
-import com.tiv.ocpapp.model_dao.DaoSession;
+import com.tiv.ocpapp.di.components.ApplicationComponent;
+import com.tiv.ocpapp.di.components.DaggerApplicationComponent;
+import com.tiv.ocpapp.di.modules.ApplicationModule;
+import com.tiv.ocpapp.di.modules.RepositoryModule;
 
-import java.io.IOException;
-import java.util.List;
+import javax.inject.Inject;
 
 
 public class OcpApplication extends Application {
-    private static final String DB_NAME = "ocp_app.db";
-    private DaoSession session;
+
+    private static ApplicationComponent mApplicationComponent;
+    @Inject
+    RepositoryModule mRepositoryModule;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, DB_NAME, null);
-        SQLiteDatabase database = helper.getWritableDatabase();
-        DaoMaster daoMaster = new DaoMaster(database);
-        session = daoMaster.newSession();
-        long count = session.getQuestionDao().queryBuilder().count();
-        if (count == 0) {
-//            Generate and insert data only if question count in DB is 0
-            LoadOcpDumper loadOcpDumpTextStructure = new LoadOcpDumpTextStructureImpl();
-            try {
-                loadOcpDumpTextStructure.init(getAssets().open("ocp8.dump"));
-                List<Question> questions = loadOcpDumpTextStructure.loadQuestions();
-                for (Question q : questions) {
-                    FakeDataGenerator.getInstance().insertQuestion(session, q);
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+        mApplicationComponent =
+                buildApplicationComponent();
+        mApplicationComponent.inject(this);
+        mRepositoryModule.putDataToDb();
     }
 
-    public DaoSession getSession() {
-        return session;
+
+    public static ApplicationComponent provideApplicationComponent() {
+        return mApplicationComponent;
     }
-    /*Make comment for update repo*/
-    /*test credential cache*/
+
+    public ApplicationComponent buildApplicationComponent() {
+        return DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+    }
 }

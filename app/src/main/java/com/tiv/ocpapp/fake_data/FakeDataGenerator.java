@@ -14,10 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 public class FakeDataGenerator {
+//    @Inject
+//    DaoSession mSession;
     private static final String TAG = FakeDataGenerator.class.getSimpleName();
 
     private FakeDataGenerator() {
+        OcpApplication.provideApplicationComponent().inject(this);
     }
 
 
@@ -55,11 +60,11 @@ public static final String DESC = "H. The code compiles without issue, so C, D, 
 
     }
 
-    public void generateQuestionsToDb(OcpApplication application) {
-        for (int i = 0; i < 5; i++) {
-            insertOneFakeQuestion(application.getSession());
-        }
-    }
+//    public void generateQuestionsToDb(OcpApplication application) {
+//        for (int i = 0; i < 5; i++) {
+//            insertOneFakeQuestion(application.getSession());
+//        }
+//    }
     public void insertQuestion(DaoSession session, com.example.model.Question q) {
         Question question = new Question();
         question.setDescription(q.getDescription());

@@ -6,5 +6,5 @@
     <string name="hint_question_number">Input question number</string>
     <string name="msg_answers_not_selected">Firstly, Please select answers</string>
     <string name="msg_last_question">It was the last question</string>
-    <string name="msg_not_valid_input">You have only %d questions</string>
+    <string name="msg_not_valid_input">You have only %s questions</string>
 </resources>
