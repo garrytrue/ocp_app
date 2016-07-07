@@ -7,7 +7,10 @@ import com.tiv.ocpapp.ui.mvp.views.IView;
  */
 public interface BasePresenter {
     void onErrorAction(String error);
+
     void onNextAction(long nextId);
+
     IView getView();
+
     void onCreate(IView view);
 }

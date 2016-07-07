@@ -3,6 +3,7 @@ package com.tiv.ocpapp.ui.mvp.presenters;
 import com.tiv.ocpapp.app.OcpApplication;
 import com.tiv.ocpapp.di.modules.RepositoryModule;
 import com.tiv.ocpapp.ui.mvp.views.IView;
+import com.tiv.ocpapp.ui.mvp.views.StartFragmentView;
 
 import javax.inject.Inject;
 
@@ -14,9 +15,6 @@ public class StartFragmentPresenter implements BasePresenter {
     @Inject
     RepositoryModule mRepositoryModule;
 
-    public StartFragmentPresenter() {
-        OcpApplication.provideApplicationComponent().inject(this);
-    }
 
     @Override
     public void onErrorAction(String error) {
@@ -25,7 +23,7 @@ public class StartFragmentPresenter implements BasePresenter {
 
     @Override
     public void onNextAction(long nextId) {
-        getView().onNextAction(nextId);
+        ((StartFragmentView)getView()).onNextAction(nextId);
     }
 
     @Override
@@ -36,6 +34,7 @@ public class StartFragmentPresenter implements BasePresenter {
     @Override
     public void onCreate(IView view) {
         this.view = view;
+        OcpApplication.provideApplicationComponent().inject(this);
     }
 
     public void loadQuestionById(String id) {

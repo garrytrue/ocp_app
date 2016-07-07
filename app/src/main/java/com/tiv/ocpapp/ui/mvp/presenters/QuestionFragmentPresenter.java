@@ -2,10 +2,12 @@ package com.tiv.ocpapp.ui.mvp.presenters;
 
 import com.tiv.ocpapp.app.OcpApplication;
 import com.tiv.ocpapp.di.modules.RepositoryModule;
-import com.tiv.ocpapp.model_dao.Question;
 import com.tiv.ocpapp.ui.mvp.views.IQuestionView;
 import com.tiv.ocpapp.ui.mvp.views.IView;
 import com.tiv.ocpapp.utils.Constants;
+import com.tiv.ocpapp.utils.Mappers;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,24 +16,26 @@ import javax.inject.Inject;
  */
 public class QuestionFragmentPresenter implements BasePresenter {
     private IQuestionView view;
-    private
     @Constants.AnswerState
-    int answerState = Constants.ANSWER_STATE_NOT_DEFINED;
+    private int answerState = Constants.ANSWER_STATE_NOT_DEFINED;
     @Inject
     RepositoryModule repositoryModule;
 
-    public QuestionFragmentPresenter() {
-        OcpApplication.provideApplicationComponent().inject(this);
-    }
 
     @Override
     public void onErrorAction(String error) {
-
+        getView().showError(error);
     }
 
     @Override
     public void onNextAction(long nextId) {
-
+        setAnswerState(Constants.ANSWER_NOT_SELECTED);
+        if (repositoryModule.isLastQuestion(repositoryModule.getCurrentQuestion().getId())) {
+            onErrorAction(Constants.ERROR_LAST_QUESTION);
+        } else {
+            view.resetViews();
+            view.updateData(repositoryModule.getQuestionById(repositoryModule.getCurrentQuestion().getId() + 1));
+        }
     }
 
     @Override
@@ -42,20 +46,36 @@ public class QuestionFragmentPresenter implements BasePresenter {
     @Override
     public void onCreate(IView view) {
         this.view = (IQuestionView) view;
+        OcpApplication.provideApplicationComponent().inject(this);
     }
 
-    public void loadQuestionById(long id) {
-        if (repositoryModule.isLastQuestion(id)) {
-            getView().showError(Constants.ERROR_LAST_QUESTION);
+    public void initQuestionById(long id) {
+        repositoryModule.getQuestionById(id);
+    }
+
+    public void onAnswerAction(List<Long> selectedAnswers) {
+        if (selectedAnswers.isEmpty()) {
+            onErrorAction(Constants.ERROR_ANSWER_NOT_SELECTED);
             return;
         }
-        Question question = repositoryModule.getQuestionById(id);
-        view.updateData(question);
+        setAnswerState(Constants.ANSWER_SELECTED);
+        Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()).subscribe(longs ->
+                view.answerResponse(longs));
     }
 
-    public void onAnswerAction() {
-        if (answerState == Constants.ANSWER_SELECTED) {
+    public void setAnswerState(@Constants.AnswerState int answerState) {
+        this.answerState = answerState;
+    }
 
+    public void loadCurrentQuestion() {
+        if (repositoryModule.isLastQuestion(repositoryModule.getCurrentQuestion().getId())) {
+            onErrorAction(Constants.ERROR_LAST_QUESTION);
+            return;
+        }
+        view.updateData(repositoryModule.getCurrentQuestion());
+        if (answerState == Constants.ANSWER_SELECTED) {
+            Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()).subscribe(longs ->
+                    view.answerResponse(longs));
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.tiv.ocpapp.di.components;
 
 import com.tiv.ocpapp.di.modules.QuestionViewModule;
-import com.tiv.ocpapp.ui.QuestionFragment;
+import com.tiv.ocpapp.ui.mvp.views.QuestionFragment;
 
 import javax.inject.Singleton;
 

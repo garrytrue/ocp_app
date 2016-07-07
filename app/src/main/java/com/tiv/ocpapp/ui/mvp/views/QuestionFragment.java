@@ -1,4 +1,4 @@
-package com.tiv.ocpapp.ui;
+package com.tiv.ocpapp.ui.mvp.views;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -22,9 +22,7 @@ import com.tiv.ocpapp.di.components.DaggerQuestionViewComponent;
 import com.tiv.ocpapp.di.modules.QuestionViewModule;
 import com.tiv.ocpapp.model_dao.Answer;
 import com.tiv.ocpapp.model_dao.Question;
-import com.tiv.ocpapp.model_dao.QuestionDao;
 import com.tiv.ocpapp.ui.mvp.presenters.QuestionFragmentPresenter;
-import com.tiv.ocpapp.ui.mvp.views.IQuestionView;
 import com.tiv.ocpapp.utils.Constants;
 
 import java.util.ArrayList;
@@ -40,9 +38,7 @@ public class QuestionFragment extends Fragment implements IQuestionView {
     private View descBtn, rootLayout;
     private List<CheckBox> checkBoxes;
     private long currentQuestionNumber;
-    private Question currentQuestion;
-    private boolean isAnswerClicked = false;
-    private final List<CompoundButton> selectedItems = new ArrayList<>();
+    private final List<Long> selectedAnswersIds = new ArrayList<>();
     private final CheckBox.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> handleCheckBoxAction(isChecked, buttonView);
     private BottomSheetBehavior mBottomSheetBehavior;
     @Inject
@@ -73,6 +69,9 @@ public class QuestionFragment extends Fragment implements IQuestionView {
         if (getArguments() != null) {
             currentQuestionNumber = getArguments().getLong(QUESTION_NUMBER);
         }
+        DaggerQuestionViewComponent.builder().questionViewModule(new QuestionViewModule()).build().inject(this);
+        questionFragmentPresenter.onCreate(this);
+        questionFragmentPresenter.initQuestionById(currentQuestionNumber);
     }
 
     @Override
@@ -90,15 +89,7 @@ public class QuestionFragment extends Fragment implements IQuestionView {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         initUI(view);
-        DaggerQuestionViewComponent.builder().questionViewModule(new QuestionViewModule()).build().inject(this);
-        questionFragmentPresenter.onCreate(this);
-        if (currentQuestion == null) {
-            Log.d(TAG, "onViewCreated: Current Question is Null");
-            questionFragmentPresenter.loadQuestionById(currentQuestionNumber);
-        } else {
-            Log.d(TAG, "onViewCreated: Current Question is not Null");
-            bindData(currentQuestion);
-        }
+        questionFragmentPresenter.loadCurrentQuestion();
     }
 
 
@@ -127,34 +118,16 @@ public class QuestionFragment extends Fragment implements IQuestionView {
         descBtn.setOnClickListener(v -> mBottomSheetBehavior.setState(
                 (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                         ? BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED));
-        if (isAnswerClicked) {
-            onAnswerBtnClicked();
-        }
     }
 
     private void onNextBtnClicked() {
-        long id = currentQuestion.getId();
-//        DaoSession session = ((OcpApplication) getActivity().getApplication()).getSession();
-//        QuestionDao questionDao = mRepositoryModule.provideDaoSession().getQuestionDao();
-//        if (isLastQuestion(questionDao)) {
-//            Snackbar.make(rootLayout, R.string.msg_last_question, Snackbar.LENGTH_SHORT).show();
-//            return;
-//        }
-//        currentQuestion = questionDao.load(++id);
-//        isAnswerClicked = false;
-//        bindData(currentQuestion);
+        questionFragmentPresenter.onNextAction(-1);
 
     }
 
-    private boolean isLastQuestion(QuestionDao questionDao) {
-        long id = currentQuestion.getId();
-        long questionCount = questionDao.count();
-        return id >= questionCount;
-    }
 
     private void bindData(Question data) {
         Log.d(TAG, "bindData() called with: " + "data = [" + data + "]");
-        resetViewsStates();
         question.setText(data.getText());
         description.setText(data.getDescription());
         questionNumber.setText(String.valueOf(data.getId()));
@@ -165,23 +138,8 @@ public class QuestionFragment extends Fragment implements IQuestionView {
                 continue;
             }
             checkBoxes.get(i).setText(answers.get(i).getBody());
-            checkBoxes.get(i).setTag(R.id.CORRECTNESS_TAG, answers.get(i).getIsCorrect());
+            checkBoxes.get(i).setTag(R.id.ANSWER_ID_TAG, answers.get(i).getId());
         }
-        if (isAnswerClicked) {
-            highlightAnswers();
-        }
-    }
-
-    private void resetViewsStates() {
-        Log.d(TAG, "resetViewsStates: IsAnsweredClicked " + isAnswerClicked);
-        if (isAnswerClicked) {
-            return;
-        }
-        resetCheckBoxesState(checkBoxes);
-        selectedItems.clear();
-        switchBottomBtnState(false);
-        isAnswerClicked = false;
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void resetCheckBoxesState(List<CheckBox> checkBoxes) {
@@ -194,49 +152,36 @@ public class QuestionFragment extends Fragment implements IQuestionView {
 
     private void handleCheckBoxAction(boolean isChecked, CompoundButton button) {
         if (isChecked) {
-            selectedItems.add(button);
+            selectedAnswersIds.add((Long) button.getTag(R.id.ANSWER_ID_TAG));
         } else {
-            selectedItems.remove(button);
+            selectedAnswersIds.remove(button.getTag(R.id.ANSWER_ID_TAG));
         }
     }
 
     private void onAnswerBtnClicked() {
-        questionFragmentPresenter.onAnswerAction();
-        isAnswerClicked = true;
-        if (!selectedItems.isEmpty()) {
-            highlightAnswers();
-            switchBottomBtnState(true);
-        } else {
-            Snackbar.make(rootLayout, R.string.msg_answers_not_selected, Snackbar.LENGTH_SHORT).show();
-        }
+        questionFragmentPresenter.onAnswerAction(selectedAnswersIds);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        if (item.getItemId() == android.R.id.home) {
             // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                getActivity().onBackPressed();
-                return true;
+            getActivity().onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("all")
-    private void highlightAnswers() {
+    private void highlightAnswers(List<Long> correctAnswersIds) {
         for (CheckBox cb : checkBoxes) {
-            if (cb.getTag(R.id.CORRECTNESS_TAG) == null) {
+            if (cb.getTag(R.id.ANSWER_ID_TAG) == null) {
                 continue;
             }
-            cb.setTextColor(((boolean) cb.getTag(R.id.CORRECTNESS_TAG))
+            cb.setTextColor(correctAnswersIds.contains(cb.getTag(R.id.ANSWER_ID_TAG))
                     ? ContextCompat.getColor(getActivity(), android.R.color.holo_green_dark)
                     : ContextCompat.getColor(getActivity(), android.R.color.holo_red_dark));
         }
-    }
-
-    @Override
-    public void onNextAction(long nextId) {
-
     }
 
     @Override
@@ -255,13 +200,22 @@ public class QuestionFragment extends Fragment implements IQuestionView {
     }
 
     @Override
-    public void loadQuestionById(long id) {
-        questionFragmentPresenter.loadQuestionById(id);
+    public void updateData(Question data) {
+        bindData(data);
     }
 
     @Override
-    public void updateData(Question data) {
-        bindData(data);
+    public void answerResponse(List<Long> correctAnswersIds) {
+        highlightAnswers(correctAnswersIds);
+        switchBottomBtnState(true);
+    }
+
+    @Override
+    public void resetViews() {
+        resetCheckBoxesState(checkBoxes);
+        selectedAnswersIds.clear();
+        switchBottomBtnState(false);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     public void switchBottomBtnState(boolean isActive) {

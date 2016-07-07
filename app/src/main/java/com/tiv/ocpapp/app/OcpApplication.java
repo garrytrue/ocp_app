@@ -1,7 +1,6 @@
 package com.tiv.ocpapp.app;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.tiv.ocpapp.di.components.ApplicationComponent;
 import com.tiv.ocpapp.di.components.DaggerApplicationComponent;

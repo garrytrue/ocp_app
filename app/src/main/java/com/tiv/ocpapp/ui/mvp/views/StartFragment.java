@@ -13,7 +13,6 @@ import android.widget.EditText;
 import com.tiv.ocpapp.R;
 import com.tiv.ocpapp.di.components.DaggerStartViewComponent;
 import com.tiv.ocpapp.di.modules.StartViewModule;
-import com.tiv.ocpapp.ui.QuestionFragment;
 import com.tiv.ocpapp.ui.mvp.presenters.StartFragmentPresenter;
 
 import javax.inject.Inject;

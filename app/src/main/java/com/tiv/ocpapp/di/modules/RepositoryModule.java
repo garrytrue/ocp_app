@@ -26,6 +26,7 @@ public class RepositoryModule {
     private static final String DB_NAME = "ocp_app.db";
     private Context context;
     private DaoSession session;
+    private com.tiv.ocpapp.model_dao.Question currentQuestionHolder;
 
     @Inject
     public RepositoryModule(Context context) {
@@ -67,10 +68,16 @@ public class RepositoryModule {
     }
 
     public com.tiv.ocpapp.model_dao.Question getQuestionById(long id) {
-        return session.getQuestionDao().loadByRowId(id);
+        currentQuestionHolder = session.getQuestionDao().loadByRowId(id);
+        return currentQuestionHolder;
     }
 
     public boolean isLastQuestion(long currentId) {
         return currentId >= getQuestionsCount();
     }
+
+    public com.tiv.ocpapp.model_dao.Question getCurrentQuestion(){
+        return currentQuestionHolder;
+    }
+
 }
