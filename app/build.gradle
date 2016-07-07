@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.sonarqube'
 apply plugin: 'com.neenbedankt.android-apt'
+apply from : '../jacoco.gradle'
 
 sonarqube {
     properties {
@@ -37,6 +38,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled = true;
+        }
     }
     testOptions {
         unitTests.returnDefaultValues = true
@@ -47,6 +51,7 @@ ext {
     GREEN_DAO_VERSION = '2.2.1'
     DAGGER_VERSION = '2.5'
     RX_JAVA_VERSION = '1.1.6'
+    RETRO_LAMBDA_VERSION = '3.3.0-beta3'
 }
 
 dependencies {
@@ -57,7 +62,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$ANDROID_SUPPORT_LIB"
     compile "com.android.support:design:$ANDROID_SUPPORT_LIB"
     compile "com.android.support:support-v4:$ANDROID_SUPPORT_LIB"
-    compile 'me.tatarka:gradle-retrolambda:3.3.0-beta3'
+    compile "me.tatarka:gradle-retrolambda:$RETRO_LAMBDA_VERSION"
     compile "org.greenrobot:greendao:$GREEN_DAO_VERSION"
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
