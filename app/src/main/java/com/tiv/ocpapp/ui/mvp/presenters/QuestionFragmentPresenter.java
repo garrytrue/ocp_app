@@ -59,8 +59,7 @@ public class QuestionFragmentPresenter implements BasePresenter {
             return;
         }
         setAnswerState(Constants.ANSWER_SELECTED);
-        Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()).subscribe(longs ->
-                view.answerResponse(longs));
+        view.answerResponse( Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()));
     }
 
     public void setAnswerState(@Constants.AnswerState int answerState) {
@@ -74,8 +73,7 @@ public class QuestionFragmentPresenter implements BasePresenter {
         }
         view.updateData(repositoryModule.getCurrentQuestion());
         if (answerState == Constants.ANSWER_SELECTED) {
-            Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()).subscribe(longs ->
-                    view.answerResponse(longs));
+            view.answerResponse( Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()));
         }
     }
 }

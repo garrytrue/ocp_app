@@ -1,6 +1,4 @@
-package com.tiv.ocpapp;
-
-import com.tiv.ocpapp.ui.mvp.presenters.StartFragmentPresenter;
+package com.tiv.ocpapp.ui.mvp.presenters;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,25 +6,24 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
+ * Created by tiv on 07.07.2016.
  */
-public class ExampleUnitTest {
+public class StartFragmentPresenterTest {
     StartFragmentPresenter startFragmentPresenter;
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
-    }
+
     @Before
-    public void setUp(){
+    public void setUp() {
         startFragmentPresenter = new StartFragmentPresenter();
     }
+
     @Test
-    public void testCorrectDBId(){
+    public void testCorrectDBId() {
         String s = "101";
         assertEquals(101, startFragmentPresenter.getDbId(s));
     }
+
     @Test
-    public void testDbIdWithInputNullValue(){
+    public void testDbIdWithInputNullValue() {
         assertEquals(1, startFragmentPresenter.getDbId(null));
     }
 }

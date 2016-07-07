@@ -2,6 +2,7 @@ package com.tiv.ocpapp.model_dao;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,6 +114,10 @@ public class Question implements Parcelable {
             throw new DaoException("Entity is detached from DAO context");
         }    
         myDao.refresh(this);
+    }
+    @Keep
+    public void setAnswers(List<Answer> answers){
+        this.answers = answers;
     }
 
     @Override

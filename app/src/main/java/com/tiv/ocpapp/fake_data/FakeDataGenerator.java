@@ -17,12 +17,10 @@ import java.util.Random;
 import javax.inject.Inject;
 
 public class FakeDataGenerator {
-//    @Inject
-//    DaoSession mSession;
+
     private static final String TAG = FakeDataGenerator.class.getSimpleName();
 
-    private FakeDataGenerator() {
-        OcpApplication.provideApplicationComponent().inject(this);
+    private FakeDataGenerator(){
     }
 
 
@@ -57,7 +55,25 @@ public static final String DESC = "H. The code compiles without issue, so C, D, 
         AnswerDao answerDao = session.getAnswerDao();
         answerDao.insertInTx(answers);
         Log.d(TAG, "insertOneFakeQuestion: Inserted ID " + id);
+    }
 
+    public Question generateFakeQuestion(){
+        Question question = new Question();
+        question.setDescription(FAKE_STRING.substring(0, 800));
+        question.setText(FAKE_STRING.substring(0, 500));
+        Random random = new Random();
+        question.setId(random.nextLong());
+        List<Answer> answers = new ArrayList<>(8);
+        for (int i = 0; i < 8; i++) {
+            Answer answer = new Answer();
+            answer.setBody(FAKE_STRING.substring(0, random.nextInt(200)));
+            answer.setIsCorrect(i % 2 == 0);
+            answer.setQuestion(question);
+            answer.setId((long)i);
+            answers.add(answer);
+        }
+        question.setAnswers(answers);
+        return question;
     }
 
 //    public void generateQuestionsToDb(OcpApplication application) {
