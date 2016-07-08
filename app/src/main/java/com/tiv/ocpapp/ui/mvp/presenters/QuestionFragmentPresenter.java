@@ -72,8 +72,11 @@ public class QuestionFragmentPresenter implements BasePresenter {
             return;
         }
         view.updateData(repositoryModule.getCurrentQuestion());
-        if (answerState == Constants.ANSWER_SELECTED) {
+        if (isAnswerSelected()) {
             view.answerResponse( Mappers.getCorrectAnswersIds(repositoryModule.getCurrentQuestion()));
         }
+    }
+    public boolean isAnswerSelected(){
+        return answerState == Constants.ANSWER_SELECTED;
     }
 }

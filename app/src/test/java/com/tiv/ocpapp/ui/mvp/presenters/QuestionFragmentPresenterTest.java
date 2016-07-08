@@ -89,6 +89,28 @@ public class QuestionFragmentPresenterTest extends BaseTest {
 //        Real Question object not loaded from mock RepositoryModule
         verify(mockQuestionView).updateData(null);
     }
+    @Test
+    public void testLoadCurrentQuestionWithError(){
+        Question question = FakeDataGenerator.getInstance().generateFakeQuestion();
+        question.setId((long)5);
+        when(mockRepositoryModule.getCurrentQuestion()).thenReturn(question);
+        when(mockRepositoryModule.isLastQuestion((long)5)).thenReturn(true);
+        questionFragmentPresenter.loadCurrentQuestion();
+        verify(mockQuestionView).showError(Constants.ERROR_LAST_QUESTION);
+    }
+    @Test
+    public void testLoadCurrentQuestionWithoutError(){
+        Question question = FakeDataGenerator.getInstance().generateFakeQuestion();
+        question.setId((long)10);
+        when(mockRepositoryModule.getCurrentQuestion()).thenReturn(question);
+        when(mockRepositoryModule.isLastQuestion((long)5)).thenReturn(false);
+        questionFragmentPresenter.loadCurrentQuestion();
+        verify(mockQuestionView).updateData(question);
+        initSelectedAnswers();
+        questionFragmentPresenter.setAnswerState(Constants.ANSWER_SELECTED);
+        when(mock(QuestionFragmentPresenter.class).isAnswerSelected()).thenReturn(true);
+        verify(mockQuestionView).answerResponse(selectedAnswers);
+    }
 
 
 }
