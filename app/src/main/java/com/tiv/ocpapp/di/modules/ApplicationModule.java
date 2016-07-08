@@ -1,7 +1,5 @@
 package com.tiv.ocpapp.di.modules;
 
-import com.tiv.ocpapp.app.OcpApplication;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -12,14 +10,10 @@ import dagger.Provides;
  */
 @Module
 public class ApplicationModule {
-    private final OcpApplication application;
 
-    public ApplicationModule(OcpApplication application) {
-        this.application = application;
-    }
     @Singleton
     @Provides
     public RepositoryModule provideRepositoryModule(){
-        return new RepositoryModule(application.getApplicationContext());
+        return new RepositoryModule();
     }
 }

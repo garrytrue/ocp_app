@@ -19,10 +19,8 @@ public class OcpApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mApplicationComponent =
-                buildApplicationComponent();
-        mApplicationComponent.inject(this);
-        mRepositoryModule.putDataToDb();
+        configApplicationComponent();
+        configRepositoryModule();
     }
 
 
@@ -31,6 +29,17 @@ public class OcpApplication extends Application {
     }
 
     public ApplicationComponent buildApplicationComponent() {
-        return DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+        return DaggerApplicationComponent.builder().applicationModule(new ApplicationModule()).build();
+    }
+
+    public void configApplicationComponent() {
+        mApplicationComponent =
+                buildApplicationComponent();
+        mApplicationComponent.inject(this);
+    }
+
+    public void configRepositoryModule() {
+        mRepositoryModule.initRepositoryModule(getApplicationContext());
+        mRepositoryModule.putDataToDb();
     }
 }

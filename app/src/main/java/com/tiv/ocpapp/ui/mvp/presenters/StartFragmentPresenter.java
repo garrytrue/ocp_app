@@ -44,7 +44,6 @@ public class StartFragmentPresenter implements BasePresenter {
         } else {
             onNextAction(inputId);
         }
-
     }
 
     public long getDbId(String id) {

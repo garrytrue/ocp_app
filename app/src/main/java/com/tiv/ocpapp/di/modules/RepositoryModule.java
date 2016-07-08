@@ -29,7 +29,10 @@ public class RepositoryModule {
     private com.tiv.ocpapp.model_dao.Question currentQuestionHolder;
 
     @Inject
-    public RepositoryModule(Context context) {
+    public RepositoryModule() {
+
+    }
+    public void initRepositoryModule(Context context){
         this.context = context;
         provideDaoSession();
     }
