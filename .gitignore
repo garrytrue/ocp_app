@@ -5,8 +5,8 @@
 com_crashlytics_export_strings.xml
 
 # Local configuration file (sdk path, etc)
-local.properties
-gradle.properties
+#local.properties
+#gradle.properties
 #settings.gradle
 
 # Gradle generated files
@@ -43,6 +43,6 @@ Thumbs.db
 .idea/
 app/libs/
 build/
-datagenerator/libs/
+#datagenerator/libs/
 #build.gradle
-libs/
+#libs/
