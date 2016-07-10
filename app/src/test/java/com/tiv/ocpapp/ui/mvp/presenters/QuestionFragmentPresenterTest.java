@@ -106,10 +106,6 @@ public class QuestionFragmentPresenterTest extends BaseTest {
         when(mockRepositoryModule.isLastQuestion((long)5)).thenReturn(false);
         questionFragmentPresenter.loadCurrentQuestion();
         verify(mockQuestionView).updateData(question);
-        initSelectedAnswers();
-        questionFragmentPresenter.setAnswerState(Constants.ANSWER_SELECTED);
-        when(mock(QuestionFragmentPresenter.class).isAnswerSelected()).thenReturn(true);
-        verify(mockQuestionView).answerResponse(selectedAnswers);
     }
 
 
