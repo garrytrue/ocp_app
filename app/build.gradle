@@ -15,6 +15,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "com.tiv.ocpapp.OcpAppTestRunner"
     }
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
@@ -41,6 +42,9 @@ ext {
     RETRO_LAMBDA_VERSION = '3.3.0-beta3'
     ROBOLECTRIC_VERSION = '3.1'
     MOCKITO_VERSION = '1.10.19'
+    ESPRESSO_VIRESION = '2.2.2'
+    TEST_RULE_VERSION = '0.4' // Support JUnit 4
+    TEST_RUNNER_VERSION = '0.5'
 }
 
 dependencies {
@@ -59,4 +63,12 @@ dependencies {
     compile "io.reactivex:rxjava:$RX_JAVA_VERSION"
     testCompile "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
     testCompile "org.mockito:mockito-core:$MOCKITO_VERSION"
+// Testing-only dependencies
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestApt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$ESPRESSO_VIRESION"
+    androidTestCompile "com.android.support:support-annotations:$ANDROID_SUPPORT_LIB"
+    androidTestCompile "com.android.support.test:runner:$TEST_RUNNER_VERSION"
+    androidTestCompile "com.android.support.test:rules:$TEST_RULE_VERSION"
+
 }
