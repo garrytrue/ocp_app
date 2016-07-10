@@ -7,4 +7,5 @@
     <string name="msg_answers_not_selected">Firstly, Please select answers</string>
     <string name="msg_last_question">It was the last question</string>
     <string name="msg_not_valid_input">You have only %d questions</string>
+    <string name="chapters">Chapter1(1-21)\nChapter2(22-41)\nChapter3(42-66)\nChapter4(67-86)\nChapter5(87-106)\nChapter6(107-126)</string>
 </resources>

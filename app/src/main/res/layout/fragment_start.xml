@@ -8,8 +8,9 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/view"
         android:layout_width="@dimen/question_number_width"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+      android:layout_centerHorizontal="true">
 
         <EditText
             android:id="@+id/question_number"
@@ -27,6 +28,12 @@
         android:layout_centerHorizontal="true"
         style="@style/Base.Widget.AppCompat.Button.Borderless"
         app:srcCompat="@drawable/ic_keyboard_arrow_right_lime_green_24dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chapters"
+        android:layout_below="@+id/arrow_btn"
+        android:layout_centerHorizontal="true"/>
 
 
 </RelativeLayout>
