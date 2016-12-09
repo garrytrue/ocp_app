@@ -1567,3 +1567,893 @@ C.- LocalDateTime
 D.- LocalTime
 E.+ ZonedDateTime
 Y: E. Local______ explicitly excludes time zones. Instant represents a point in time, but always uses GMT rather than the desired time zone.
+---1 chapter6
+Q: Which of the following pairs fills in the blanks to make this code compile?
+5: public void read() ___________ SQLException {
+6: ___________ new SQLException();
+7: }
+A.- throw on line 5 and throw on line 6
+B.- throw on line 5 and throws on line 6
+C.+ throws on line 5 and throw on line 6
+D.- throws on line 5 and throws on line 6
+E.- None of the above. SQLException is a checked exception and cannot be thrown.
+F.- None of the above. SQLException is a runtime exception and cannot be thrown.
+Y: C. The method should declare that it throws an exception and the body of the method
+actually would throw it. Options E and F are incorrect because both checked and
+unchecked (runtime) exceptions can be declared in a method signature. Also, option F is
+incorrect because SQLException is a checked exception.
+---2 chapter6
+Q: Which of the following changes when made independently would make this code compile? (Choose all that apply.)
+1: public class StuckTurkeyCage implements AutoCloseable {
+2:    public void close() throws Exception {
+3:       throw new Exception("Cage door does not close");
+4:
+5:    public static void main(String[] args) {
+6:       try (StuckTurkeyCage t = new StuckTurkeyCage()) {
+7:         System.out.println("put turkeys in");
+8:       }
+9:    }
+10: }
+A.- Remove throws Exception from the declaration on line 2.
+B.+ Add throws Exception to the declaration on line 5.
+C.+ Change line 8 to } catch (Exception e) {}.
+D.- Change line 8 to } finally {}.
+E.- None of the above will make the code compile.
+F.- The code already compiles as is.
+Y: B, C. Option A is incorrect because it will move the compilation error to the close() method
+since it does throw an exception that must be handled or declared. Option B is correct
+because the unhandled exception becomes declared. Option C is correct because the excep-
+tion becomes handled. Option D is incorrect because the exception remains unhandled.
+---3 chapter6
+Q: Which of the following fills in the blank to make the code compile? (Choose all that apply)
+1: public static void main(String[] args)
+2:    try {
+3:      throw new IOException();
+4:    } catch (__________________________ ) { }
+5: }
+A.- FileNotFoundException | IOException e
+B.- FileNotFoundException e | IOException e
+C.- FileNotFoundException | RuntimeException e
+D.- FileNotFoundException e | RuntimeException e
+E.+ IOException | RuntimeException e
+F.- IOException e | RuntimeException e
+Y: E. Options B, D, and F are incorrect because only one variable name is allowed in a
+multi-catch block. Option A is incorrect because FileNotFoundException is a subclass
+of IOException. A multi-catch statement does not allow redundancy, and just catching
+IOException would have been equivalent. Option C is incorrect because the IOException
+that is thrown is not handled.
+---4 chapter6
+Q: Which of the following are true statements? (Choose all that apply.)
+A.+ A traditional try statement without a catch block requires a finally block.
+B.+ A traditional try statement without a finally block requires a catch block.
+C.- A traditional try statement with only one statement can omit the {}.
+D.- A try-with-resources statement without a catch block requires a finally block.
+E.- A try-with-resources statement without a finally block requires a catch block.
+F.- A try-with-resources statement with only one statement can omit the {}.
+Y: A, B. A try-with-resources statement does not require a catch or finally block. A tradi-
+tional try statement requires at least one of the two.
+---5 chapter6
+Q: What is the output of the following code?
+1: import java.io.*;
+2: public class AutocloseableFlow {
+3:    static class Door implements AutoCloseable {
+4:       public void close() {
+5:          System.out.print("D");
+6:     } }
+7: static class Window implements Closeable {
+8:    public void close() {
+9:       System.out.print("W");
+10:         throw new RuntimeException();
+11:    } }
+12: public static void main(String[] args) {
+13:    try (Door d = new Door(); Window w = new Window()) {
+14:       System.out.print("T");
+15:    } catch (Exception e) {
+16:       System.out.print("E");
+17:    } finally {
+18:       System.out.print("F");
+19:    } } }
+A.- TWF
+B.- TWDF
+C.+ TWDEF
+D.- TWF followed by an exception
+E.- TWDF followed by an exception
+F.- TWEF followed by an exception
+G.- The code does not compile.
+Y: C. After opening both resources in the try-with-resources statement, T is printed. Then the
+try-with-resource completes and closes the resources in reverse order from which they were
+opened. After W is printed, an exception is thrown. However, the remaining resource is still
+closed and D is printed. The exception thrown is then caught and E is printed. Last, the
+finally block is run, printing F. Therefore the answer is TWDEF.
+---6 chapter6
+Q: What is the output of the following code?
+1: import java.io.*;
+2: public class AutocloseableFlow {
+3:    static class Door implements AutoCloseable {
+4:       public void close() {
+5:          System.out.print("D");
+6:     } }
+7: static class Window implements Closeable {
+8:    public void close() {
+9:       System.out.print("W");
+10:         throw new RuntimeException();
+11:    } }
+12: public static void main(String[] args) {
+13:    try {
+14:      Door d = new Door(); Window w = new Window() 
+15:    }
+16:    {
+17:       System.out.print("T");
+18:    } catch (Exception e) {
+19:       System.out.print("E");
+20:    } finally {
+21:       System.out.print("F");
+22:    } } }
+A.- TWF
+B.- TWDF
+C.- TWDEF
+D.- TWF followed by an exception
+E.- TWDF followed by an exception
+F.- TWEF followed by an exception
+G.+ The code does not compile.
+Y: G. A try-with-resources statement uses parentheses rather than brackets for the try section.
+This is likely subtler than a question that you’ll get on the exam, but it is still important to
+be on alert for details.
+---7 chapter6
+Q: What is the result of running java EchoInput hi there with the following code?
+1: public class EchoInput {
+2:    public static void main(String [] args) {
+3:       if(args.length <= 3) assert false;
+4:       System.out.println(args[0] + args[1] + args[2]);
+5:    }
+6: }
+A.- hithere
+B.- The assert statement throws an AssertionError.
+C.+ The code throws an ArrayIndexOutOfBoundsException.
+D.- The code compiles and runs successfully, but there is no output.
+E.- The code does not compile.
+Y: C. The code compiles fine, so option E is incorrect. The command line has only two argu-
+ments, so args.length is 2 and the if statement is true. However, because assertions are
+not enabled, it does not throw an AssertionError, so option B is incorrect. The println
+attempts to print args[2], which generates an ArrayIndexOutOfBoundsException, so the
+answer is option C.
+---8 chapter6
+Q:Which of the following command lines cause this program to fail on the assertion? (Choose all that apply.)
+1: public class On {
+2:    public static void main(String[] args) {
+3:       String s = null;
+4:       assert s != null;
+5:    }
+6:  }
+A.- java –da On
+B.+ java –ea On
+C.+ java -da -ea:On On
+D.- java -ea -da:On On
+E.- The code does not compile.
+Y: B, C. Java uses the flags –ea or –enableassertions to turn on assertions. –da or
+–disableassertions turns off assertions. The colon indicates for a specific class. Choice B
+is correct because it turns on assertions for all code. Choice C is correct because it disables
+assertions but then turns them back on for this class.
+---9 chapter6
+Q: Which of the following prints OhNo with the assertion failure when the number is negative? (Choose all that apply.)
+A.+ assert n < 0: "OhNo";
+B.- assert n < 0, "OhNo";
+C.- assert n < 0 ("OhNo");
+D.+ assert(n < 0): "OhNo";
+E.- assert(n < 0, "OhNo");
+Y: A, D. An assertion consists of a boolean expression followed by an optional colon and
+message. The boolean expression is allowed to be in parenthesis, but this is not required.
+Therefore A and D are correct.
+---10 chapter6
+Q: Which of the following are true of the code? (Choose all that apply.)
+4: private int addPlusOne(int a, int b) {
+5:    boolean assert = false;
+6:    assert a++ > 0;
+7:    assert b > 0;
+8:    return a + b;
+9: }
+A.+ Line 5 does not compile.
+B.- Lines 6 and 7 do not compile because they are missing the String message.
+C.- Lines 6 and 7 do not compile because they are missing parentheses.
+D.- Line 6 is an appropriate use of an assertion.
+E.+ Line 7 is an appropriate use of an assertion.
+Y: A, E. Line 5 does not compile because assert is a reserved word making Choice A correct.
+B and C are incorrect because the parenthesis and message are both optional. D is incorrect
+because assertions should not have side effects. E is correct because checking an argument
+passed from elsewhere in the program is an appropriate use of an assertion.
+---11 chapter6
+Q: Which of the following are runtime exceptions? (Choose all that apply.)
+A.- Exception
+B.+ IllegalStateException
+C.- IOException
+D.+ MissingResourceException
+E.- DateTimeParseException
+F.+ SQLException
+Y: B, D, E. You need to memorize the contents of Table 6.2 and Table 6.3 before the exam.
+---12 chapter6
+Q: Which of the following can legally fill in the blank? (Choose all that apply.)
+1: public class AhChoo {
+2:    static class SneezeException extends Exception { }
+3:    static class SniffleException extends SneezeException { }
+4:    public static void main(String[] args) throws SneezeException {
+5:       try {
+6:          throw new SneezeException();
+7:       } catch (SneezeException e) {
+8:          ______________
+9:          throw e;
+10:      } } }
+A.+ // leave line blank
+B.- e = new Exception();
+C.- e = new RuntimeException();
+D.+ e = new SneezeException();
+E.+ e = new SniffleException();
+F.- None of the above; the code does not compile.
+Y: A, D, E. Since a single exception type is caught, only the same type of exception or a sub-
+class is allowed to be assigned to the variable in the catch block. Therefore D and E are
+correct. Additionally A is correct because there are no changes to the variable.
+---13 chapter6
+Q: Which of the following can legally fill in the blank? (Choose all that apply.)
+1: public class AhChoo {
+2:    static class SneezeException extends Exception { }
+3:    static class SniffleException extends SneezeException { }
+4:    public static void main(String[] args) throws SneezeException {
+5:       try {
+6:          throw new SneezeException();
+7:       } catch (SneezeException | RuntimeException e) {
+8:          ______________
+9:          throw e;
+10:      } } }
+A.+ // leave line blank
+B.- e = new Exception();
+C.- e = new RuntimeException();
+D.- e = new SneezeException();
+E.- e = new SniffleException();
+F.- None of the above; the code does not compile.
+Y: A. Since a multi-catch is used, the variable in the catch block is effectively final and cannot
+be reassigned.
+---14 chapter6
+Q: Which of the following can legally fill in the blank? (Choose all that apply.)
+1: public class AhChoo {
+2:    static class SneezeException extends Exception { }
+3:    static class SniffleException extends SneezeException { }
+4:    public static void main(String[] args) throws SneezeException {
+5:       try {
+6:          throw new SneezeException();
+7:       } catch (SneezeException | SniffleException e) {
+8:          ______________
+9:          throw e;
+10:      } } }
+A.- // leave line blank
+B.- e = new Exception();
+C.- e = new RuntimeException();
+D.- e = new SneezeException();
+E.- e = new SniffleException();
+F.+ None of the above; the code does not compile.
+Y: F. A multi-catch cannot catch both a superclass and subclass. Notice how similar questions
+can be while testing something that is entirely different.
+---15 chapter6
+Q: Which of the following are checked exceptions? (Choose all that apply.)
+1: class One extends RuntimeException{}
+2: class Two extends Exception{}
+3: class Three extends Error{}
+4: class Four extends One{}
+5: class Five extends Two{}
+6: class Six extends Three{}
+A.- One
+B.+ Two
+C.- Three
+D.- Four
+E.+ Five
+F.- Six
+Y: B, E. A checked exception extends Exception but not RuntimeException. The entire hier-
+archy counts, so B and E are both correct.
+---16 chapter6
+Q: What is the output of the following?
+1: public class SnowStorm {
+2:    static class Walk implements AutoCloseable {
+3:       public void close() {
+4:          throw new RuntimeException("snow");
+5:       }
+6: }
+7: public static void main(String[] args) {
+8:    try (Walk walk1 = new Walk(); Walk walk2 = new Walk();) {
+9:       throw new RuntimeException("rain");
+10:   } catch(Exception e) {
+11:     System.out.println(e.getMessage()
+12:     + " " + e.getSuppressed().length);
+13: } } }
+A.- rain 0
+B.- rain 1
+C.+ rain 2
+D.- show 0
+E.- snow 1
+F.- snow 2
+G. The code does not compile.
+Y: C. The exception inside the try block becomes the primary exception since it is
+thrown first. Then two suppressed exceptions are added to it when trying to close the
+AutoCloseable resources.
+---17 chapter6
+Q: Fill in the blank: A class that implements _________________ may be in a try-with-resource statement. (Choose all that apply.)
+A.+ AutoCloseable
+B.+ Closeable
+C.- Exception
+D.- RuntimeException
+E.- Serializable
+Y: A, B. Closeable was the original interface for IO classes. AutoCloseable was added in
+Java 7 along with try-with-resources. Closeable extends AutoCloseable for backward
+compatibility.
+---18 chapter6
+Q: Which pairs fill in the blanks? The close() method is not allowed to throw a(n) _________________ in a class that implements _________________ . (Choose all that apply.)
+A.- Exception, AutoCloseable
+B.+ Exception, Closeable
+C.- IllegalStateException, AutoCloseableReview Questions 
+D.- IllegalStateException, Closeable
+E.- IOException, AutoCloseable
+F.- IOException, Closeable
+Y: B. The main difference between AutoCloseable and Closeable is that AutoCloseable has
+Exception in the signature and Closeable has only IOException in the signature. Since
+IllegalStateException is a runtime exception, it can be thrown by any method.
+---19 chapter6
+Q: Which of the following cannot fill in the blank? (Choose all that apply.)
+1: public void read() throws SQLException {
+2:    try {
+3:       readFromDatabase();
+4:    } catch (_________________ e) {
+5:       throw e;
+6:    }
+7: }
+8: private void readFromDatabase() throws SQLException { }
+A.- Exception
+B.- RuntimeException
+C.- SQLException
+D.+ SQLException | IOException
+E.- SQLException | RuntimeException
+Y: D. Choice A is allowed because Java 7 and later “translates” Exception in a catch block to
+the correct one. Choices C and E are allowed because they actually catch a SQLException.
+Choice D is not allowed because there is no IOException declared. Choice B is allowed
+because a method does not have to handle an exception if it declares it.
+---20 chapter6
+Q: Which of the following is true when creating your own exception class?
+A.- One or more constructors must be coded.
+B.- Only checked exceptions may be created.
+C.- Only unchecked exceptions may be created.
+D.- The toString() method must be coded.
+E.+ None of the above.
+Y: E. You can create checked or unchecked exceptions. The default constructor is used if one is
+not supplied. There is no requirement to implement specific methods.
+---1 chapter7
+Q: Given an instance of a Stream, s, and a Collection, c, which are valid ways of creating a parallel stream? (Choose all that apply.)
+A.- new ParallelStream(s)
+B.- c.parallel()
+C.- s.parallelStream()
+D.+ c.parallelStream()
+E.- new ParallelStream(c)
+F.+ s.parallel()
+Y: D, F. There is no such class as ParallelStream, so A and E are incorrect. The method
+defined in the Stream class to create a parallel stream from an existing stream is paral-
+lel(); therefore F is correct and C is incorrect. The method defined in the Collection
+class to create a parallel stream from a collection is parallelStream(); therefore D is cor-
+rect and B is incorrect.
+---2 chapter7
+Q: Which of the following statements about the Callable call() and Runnable run() methods are correct? (Choose all that apply.)
+A.+ Both can throw unchecked exceptions.
+B.- Callable takes a generic method argument.
+C.+ Callable can throw a checked exception.
+D.+ Both can be implemented with lambda expressions.
+E.- Runnable returns a generic type.
+F.+ Callable returns a generic type.
+G.- Both methods return void.
+Y: A, C, D, F. Runnable and Callable statements both take no method arguments as input,
+so B is incorrect. Runnable returns void and Callable returns a generic type, so F is cor-  
+rect, and E and G are incorrect. All methods are capable of throwing unchecked exceptions,
+so A is correct. Only Callable is capable of throwing checked exceptions, so C is correct.
+Both Runnable and Callable can be implemented with lambda expressions, so D is correct.
+---3 chapter7
+Q: Which lines need to be changed to make the code compile? (Choose all that apply.)
+1: ExecutorService service = Executors.newSingleThreadScheduledExecutor();
+2: service.scheduleWithFixedDelay(() -> { // w1
+3:    System.out.println("Open Zoo");
+4:       return null; // w2
+5:  }, 0, 1, TimeUnit.MINUTES);
+6: Future<?> result = service.submit(() -> System.out.println("Wake Staff")); // w3
+7: System.out.println(result.get()); // w4
+A.- It compiles and runs without issue.
+B.+ Line w1
+C.+ Line w2
+D.- Line w3
+E.- Line w4
+F.- It compiles but throws an exception at runtime.
+Y: B, C. The code does not compile, so A and F are incorrect. The first problem is that
+although a ScheduledExecutorService is created, it is assigned to an ExecutorService.
+Since scheduleWithFixedDelay() does not exist in ExecutorService, line w1 will not
+compile, and B is correct. The second problem is that scheduleWithFixedDelay()supports
+only Runnable, not Callable, and any attempt to return a value is invalid in a Runnable
+lambda expression; therefore line w2 will also not compile and C is correct. The rest of the
+lines compile without issue, so D and E are incorrect.
+---4 chapter7
+Q: What statement about the following code is true?
+1: AtomicLong value1 = new AtomicLong(0);
+2: final long[] value2 = {0};
+3: IntStream.iterate(1, i -> 1).limit(100).parallel()
+4:    .forEach(i -> value1.incrementAndGet());
+5: IntStream.iterate(1, i -> 1).limit(100).parallel()
+6:    .forEach(i -> ++value2[0]);
+7: System.out.println(value1+" "+value2[0]);
+A.- It outputs 100 100.
+B.- It outputs 100 99.
+C.+ The output cannot be determined ahead of time.
+D.- The code does not compile.
+E.- It compiles but throws an exception at runtime.
+F.- It compiles but enters an infinite loop at runtime.
+Y: C. The code compiles and runs without throwing an exception or entering an infinite loop,
+so D, E, and F are incorrect. The key here is that the increment operator ++ is not atomic.
+While the first part of the output will always be 100, the second part is nondeterministic. It
+could output any value from 1 to 100, because the threads can overwrite each other’s work.
+Therefore, C is the correct answer and A and B are incorrect.
+---5 chapter7
+Q: Fill in the blanks: ___ occur(s) when two or more threads are blocked forever but both appear active.
+ ___ occur(s) when two or more threads try to complete a related task at the same time
+A.- Livelock, Deadlock
+B.- Deadlock, Starvation
+C.- Race conditions, Deadlock
+D.+ Livelock, Race conditions
+E.- Starvation, Race conditions
+F.- Deadlock, Livelock
+Y: D. Livelock occurs when two or more threads are conceptually blocked forever, although
+they are each still active and trying to complete their task. A race condition is an undesir-
+able result that occurs when two tasks are completed at the same time, which should have
+been completed sequentially. For these reasons, D is the only correct answer.
+---6 chapter7
+Q: Which happens when more tasks are submitted to a thread executor than available threads?
+A.- The thread executor will throw an exception when a task is submitted that is over its thread limit.
+B.+ The task will be added to an internal queue and completed when there is an available thread.
+C.- The thread executor will discard any task over its thread limit.
+D.- The call to submit the task to the thread executor will wait until there is a thread available before continuing.
+E.- The thread executor creates new temporary threads to complete the additional tasks.
+Y: B. If a task is submitted to a thread executor, and the thread executor does not have any
+available threads, the call to the task will return immediately with the task being queued
+internally by the thread executor. For this reason, B is the only correct answer.
+---7 chapter7
+Q: What is the result of executing the following code snippet?
+1: List<Integer> l1 = Arrays.asList(1,2,3);
+2: List<Integer> l2 = new CopyOnWriteArrayList<>(l1);
+3: Set<Integer> s3 = new ConcurrentSkipListSet<>();
+4: s3.addAll(l1);
+5: for(Integer item: l2) l2.add(4); // x1
+6: for(Integer item: s3) s3.add(5); // x2
+7: System.out.println(l1.size()+" "+l2.size()+" "+s3.size());
+A.+ It outputs 3 6 4.
+B.- It outputs 6 6 6.
+C.- It outputs 6 3 4.
+D.- The code does not compile.
+E.- It compiles but throws an exception at runtime on line x1.
+F.- It compiles but throws an exception at runtime on line x2.
+G.- It compiles but enters an infinite loop at runtime
+Y: A. The code compiles without issue, so D is incorrect. The CopyOnWriteArrrayList
+class is designed to preserve the original list on iteration, so the first loop will be executed
+exactly three times and E is incorrect. The ConcurrentSkipListSet class allows modifica-
+tions while iterating, so it is possible that the second loop could generate an infinite loop.
+In this case, though, the second loop executes exactly four times, since elements in a set are
+unique and 5 can be added only once. For these reasons, F and G are also incorrect. Finally,
+despite using the elements of l1 to populate the collections, l2 and s3 are not backed by the
+original list, so the size of l1 is 3. Likewise, the size of l2 is 6 and the size of s3 is 4, so A is
+the correct answer.
+---8 chapter7
+Q: What statements about the following code are true? (Choose all that apply.)
+1: Integer i1 = Arrays.asList(1,2,3,4,5).stream().findAny().get();
+2:    synchronized(i1) { // y1
+3:       Integer i2 = Arrays.asList(6,7,8,9,10)
+4:          .parallelStream()
+5:          .sorted() // y2
+6:          .findAny().get(); // y3
+7:       System.out.println(i1+" "+i2);
+8: }
+A.- It outputs 1 6.
+B.- It outputs 1 10.
+C.- The code will not compile because of line y1.
+D.- The code will not compile because of line y2.
+E.- The code will not compile because of line y3.
+F.- It compiles but throws an exception at runtime.
+G.+ The output cannot be determined ahead of time.
+H.- It compiles but waits forever at runtime.
+Y: G. The code compiles and runs without issue, so C, D, E, F, and H are incorrect. There
+are two important things to notice: first, synchronizing on the first output doesn’t actually
+impact the results of the code. Second, sorting on a parallel stream does not mean that
+findAny() will return the first record. The findAny() method will return the value from
+the first thread that retrieves a record. Therefore, the output is not guaranteed for either
+serial or parallel stream. Since the results cannot be predicted ahead of time, G is the
+correct answer.
+---9 chapter7
+Q: Assuming MyTask is an abstract class that implements the ForkJoinTask interface, what
+statements about the following code are true? (Choose all that apply.)
+1: import java.util.concurrent.*;
+2: public class FindMin extends MyTask {
+3:    private Integer[] elements;
+4:    private int a;
+5:    private int b;
+6:    public FindMin(Integer[] elements, int a, int b) {
+7:       this.elements = elements;
+8:       this.a = a;
+9:       this.b = b;
+10:   }
+11:   public Integer compute() {
+12:      if ((b—a) < 2)
+13:         return Math.min(elements[a], elements[b]);
+14:      else {
+15:          int m = a + ((b—a) / 2);
+16:         System.out.println(a + "," + m + "," + b);
+17:         MyTask t1 = new FindMin(elements, a, m);
+18:         int result = t1.fork().join();
+19:         return Math.min(new FindMin(elements, m, b).compute(), result);
+20:      }
+21:   }
+22:   public static void main(String[] args) throws InterruptedException,
+23:                                                 ExecutionException {
+24:      Integer[] elements = new Integer[] { 8, -3, 2, -54 };
+25:      MyTask task = new FindMin(elements, 0, elements.length—1);
+26:      ForkJoinPool pool = new ForkJoinPool(1);
+27:      Integer sum = pool.invoke(task);
+28:      System.out.println("Min: " + sum);
+29:  }
+30: }
+A.+ The code correctly finds the minimum value in the array.
+B.- MyTask inherits RecursiveAction.
+C.+ MyTask inherits RecursiveTask.
+D.- The code produces a ForkJoinPool at runtime.
+E.+ The class produces single-threaded performance at runtime.
+F.- The code does not compile.
+Y: A, C, E. The code compiles without issue, so F is incorrect. Note that the compute()
+method is protected in the parent class, although you can override it with public
+without issue since this is a more accessible modifier. Since compute() returns a value
+RecursiveTask must be inherited instead of RecursiveAction, so C is correct and B is
+incorrect. The code does correctly find the minimum value on a non-empty array without
+entering an infinite loop, so A is correct and D is incorrect. Finally, since the code calls
+join() immediately after fork(), causing the process to wait, it does not perform any
+faster if there are 100 threads versus 1 thread, so E is also correct.
+---10 chapter7
+Q: What statements about the following code are true? (Choose all that apply.)
+1: System.out.println(Arrays.asList("duck","chicken","flamingo","pelican")
+2:    .parallelStream().parallel() // q1
+3:    .reduce(0,
+4:       (c1, c2) -> c1.length() + c2.length(), // q2
+5:       (s1, s2) -> s1 + s2)); // q3
+A.- It compiles and runs without issue, outputting the total length of all strings in the stream.
+B.- The code will not compile because of line q1.
+C.+ The code will not compile because of line q2.
+D.- The code will not compile because of line q3.
+E.- It compiles but throws an exception at runtime.
+Y: C. The code does not compile, so A and E are incorrect. The problem here is that c1 is a
+String but c2 is an int, so the code fails to combine on line q2, since calling length() on
+an int is not allowed, and C is correct. The rest of the lines compile without issue. Note
+that calling parallel() on an already parallel is allowed, and it may in fact return the
+same object.
+---11 chapter7
+Q: What statements about the following code snippet are true? (Choose all that apply.)
+1: Object o1 = new Object();
+2: Object o2 = new Object();
+3: ExecutorService service = Executors.newFixedThreadPool(2);
+4: Future<?> f1 = service.submit(() -> {
+5:    synchronized (o1) {
+6:       synchronized (o2) { System.out.println("Tortoise"); } // t1
+7:    }
+8: });
+9: Future<?> f2 = service.submit(() -> {
+10:   synchronized (o2) {
+11:      synchronized (o1) { System.out.println("Hare"); } // t2
+12:   }
+13: });
+14: f1.get();
+15: f2.get();
+A.+ If the code does output anything, the order cannot be determined.
+B.- The code will always output Tortoise followed by Hare.
+C.- The code will always output Hare followed by Tortoise.
+D.- The code does not compile because of line t1.
+E.- The code does not compile because of line t2.
+F.+ The code may produce a deadlock at runtime.
+G.- The code may produce a livelock at runtime.
+H.- It compiles but throws an exception at runtime.
+Y: A, F. The code compiles without issue, so D and E are incorrect. Since both tasks are sub-
+mitted to the same thread executor pool, the order cannot be determined, so B and C are
+incorrect and A is correct. The key here is that the way the resources o1 and o2 are syn-
+chronized, a deadlock could appear if the first thread gets o1 and the second thread gets o2;
+therefore F is correct. The code cannot produce a livelock, since both threads are waiting,
+so G is incorrect. Finally, if a deadlock does occur, an exception will not be thrown, so H is
+incorrect.
+---12 chapter7
+Q: What is the result of executing the following application? (Choose all that apply.)
+1: import java.util.concurrent.*;
+2: public class CountNumbers extends RecursiveAction {
+3: private int start;
+4: private int end;
+5: public CountNumbers(int start, int end) {
+6:    this.start = start;
+7:    this.end = end;
+8: }
+9: protected void compute() {
+10:   if (start<0) return;
+11:   else {
+12:      int middle = start + ((end—start) / 2);
+13:      invokeAll(new CountNumbers(start, middle),
+14:         new CountNumbers(middle, end)); // m1
+15:   }
+16: }
+17: public static void main(String[] args) {
+18:    ForkJoinTask<?> task = new CountNumbers(0, 4); // m2
+19:    ForkJoinPool pool = new ForkJoinPool();
+20:    Object result = pool.invoke(task); // m3
+21: }
+22: }
+A.- It compiles and runs without issue.
+B.- The code will not compile because of m1.
+C.- The code will not compile because of m2.
+D.- The code will not compile because of m3.
+E.+ It compiles but throws an exception at runtime.
+F.- It compiles but hangs at runtime.
+Y: E. The program compiles without issue, so B, C, and D are incorrect. Lines m2 and m3
+throw a compiler warning about generics but still compile. Notice that RecursiveAction,
+unlike RecursiveTask, does not return a value. However, since we used a generic Fork-
+JoinTask reference, the code still compiles. The issue here is that the base condition is not
+reached since the numbers start/end are consistently positive. This causes an infinite loop,
+although since memory is finite, Java detects this and throws a StackOverflowError, so E
+is correct. In practice, this could also generate a locking exception before the StackOver-
+flowError when the program runs out of memory, but in either circumstance, the program
+will exit.
+---13 chapter7
+Q: What statements about the following code snippet are true? (Choose all that apply.)
+4: Stream<String> cats = Stream.of("leopard","lynx","ocelot","puma").parallel();
+5: Stream<String> bears = Stream.of("panda","grizzly","polar").parallel();
+6: ConcurrentMap<Boolean, List<String>> data = Stream.of(cats,bears)
+7:   .flatMap(s -> s)
+8:   .collect(Collectors.groupingByConcurrent(s -> !s.startsWith("p")));
+9: System.out.println(data.get(false).size()+" "+data.get(true).size());
+A.+ It outputs 3 4.
+B.- It outputs 4 3.
+C.- The code will not compile because of line 6.
+D.- The code will not compile because of line 7.
+E.- The code will not compile because of line 8.
+F.- It compiles but throws an exception at runtime.
+G.+ The collect() operation is always executed in a single-threaded fashion.
+Y: A, G. The code compiles and runs without issue, so C, D, E, and F are incorrect. The col-
+lect() operation groups the animals into those that do and do not start with the letter
+p. Note that there are four animals that do not start with the letter p and three animals
+that do. The negation operator ! before the startsWith() method means that results are
+reversed, so the output is 3 4 and A is correct, making B incorrect. Finally, the stream cre-
+ated by flatMap() is a new stream that is not parallel by default, even though its elements
+are parallel streams. Therefore, the performance will be single-threaded and G is correct.
+---14 chapter7
+Q: What is the result of calling the following method?
+3: public void addAndPrintItems(BlockingDeque<Integer> deque) {
+4:    deque.offer(103);
+5:    deque.offerFirst(20, 1, TimeUnit.SECONDS);  
+6:    deque.offerLast(85, 7, TimeUnit.HOURS);
+7:    System.out.print(deque.pollFirst(200, TimeUnit.NANOSECONDS));
+8:    System.out.print(" "+deque.pollLast(1, TimeUnit.MINUTES));
+9: }
+A.- It outputs 20 85.
+B.- It outputs 103 85.
+C.- It outputs 20 103.
+D.+ The code will not compile.
+E.- It compiles but throws an exception at runtime.
+F.- The output cannot be determined ahead of time.
+Y: D. The methods on line 5, 6, 7, and 8 each throw InterruptedException, which is a
+checked exception; therefore the method does not compile and C is the only correct answer.
+If the method signature was updated to include throws InterruptedException, then the
+answer would be F, because the deque may be blocked at runtime when the offerFirst(),
+offerLast(), pollFirst(), and pollLast() operations are called. Finally, if they were
+not blocked and there were no other operations on the deque, then the output would be 20
+85, and the answer would be A.
+---15 chapter7
+Q: Which of the following are valid Callable expressions? (Choose all that apply.)
+A.- a -> {return 10;}
+B.- () -> {String s = "";}
+C.+ () -> 5
+D.- () -> {return null}
+E.+ () -> "The" + "Zoo"
+F.- (int count) -> count+1
+G.+ () -> {System.out.println("Giraffe"); return 10;}
+Y: C, E, G. A Callable lambda expression takes no values and returns a generic type; there-
+fore C, E, and G are correct. A and F are incorrect because they both take an input param-
+eter. B is a Runnable lambda expression, because it does not return a value, but it is not a
+Callable one, so B is incorrect. D is not a valid lambda expression, because it is missing a
+semicolon at the end of the return statement, which is required when inside braces {}.
+---16 chapter7
+Q: What is the result of executing the following application? (Choose all that apply.)
+1: import java.util.concurrent.*;
+2: import java.util.stream.*;
+3: public class PrintConstants {
+4:    public static void main(String[] args) {
+5:       ExecutorService service = Executors.newScheduledThreadPool(10);
+6:       DoubleStream.of(3.14159,2.71828) // b1
+7:          .forEach(c -> service.submit( // b2
+8:             () -> System.out.println(10*c))); // b3
+9:       service.execute(() -> System.out.println("Printed")); // b4
+10:   }
+11: }
+A.- It compiles and outputs the two numbers, followed by Printed.
+B.- The code will not compile because of line b1.
+C.- The code will not compile because of line b2.
+D.- The code will not compile because of line b3.
+E.- The code will not compile because of line b4.
+F.+ It compiles but the output cannot be determined ahead of time.
+G.- It compiles but throws an exception at runtime.
+H.+ It compiles but waits forever at runtime.
+Y: F, H. The application compiles and does not throw an exception, so B, C, D, E, and G are
+incorrect. Even though the stream is processed in sequential order, the tasks are submitted
+to a thread executor, which may complete the tasks in any order. Therefore, the output can-
+not be determined ahead of time and F is correct, making A incorrect. Finally, the thread
+executor is never shut down; therefore the code will run but it will never terminate, making
+H also correct.
+---17 chapter7
+Q: Assuming 100 milliseconds is enough time for the tasks submitted to the thread executor to
+complete, what is the result of executing the following program? (Choose all that apply.)
+1: import java.util.concurrent.*;
+2: public class SheepManager {
+3: private static AtomicInteger sheepCount1 = new AtomicInteger(0); // w1
+4: private static int sheepCount2 = 0;
+5: public static void main(String[] args) throws InterruptedException {
+6:    ExecutorService service = null;
+7:       try {
+8:          service = Executors.newSingleThreadExecutor(); // w2
+9:          for(int i=0; i<100; i++)
+10:            service.execute(() ->
+11:            {sheepCount1.getAndIncrement(); sheepCount2++;}); // w3
+12:         Thread.sleep(100);
+13:         System.out.println(sheepCount1+" "+sheepCount2);
+14:      } finally {
+15:         if(service != null) service.shutdown();
+16:      }
+17:   }
+18: }
+A.- It outputs 100 99.
+B.+ It outputs 100 100.
+C.- The output cannot be determined ahead of time.
+D.- The code will not compile because of line w1.
+E.- The code will not compile because of line w2.
+F.- The code will not compile because of line w3.
+G.- It compiles but throws an exception at runtime.
+Y: B. The code compiles and runs without issue, so D, E, F, and G are incorrect. The key
+aspect to notice in the code is that a single-thread executor is used, meaning that no task
+will be executed concurrently. Therefore, the results are valid and predictable with 100 100
+being the output, and B is the correct answer. If a pooled thread executor was used with at
+least two threads, then the sheepCount2++ operations could overwrite each other, making
+the second value indeterminate at the end of the program. In this case, C would be the cor-
+rect answer
+---18 chapter7
+Q: What is the result of executing the following application? (Choose all that apply.)
+1: import java.util.concurrent.*;
+2: import java.util.stream.*;
+3: public class StockRoomTracker {
+4:    public static void await(CyclicBarrier cb) { // j1
+5:       try { cb.await(); } catch (InterruptedException |
+6:    BrokenBarrierException e) {
+7:        // Handle exception
+8:       }
+9:    }
+10:  public static void main(String[] args) {
+11:     CyclicBarrier cb = new CyclicBarrier(10,
+12:        () -> System.out.println("Stock Room Full!")); // j2
+13:     IntStream.iterate(1, i -> 1).limit(9)
+14:        .parallel().forEach(i -> await(cb)); // j3
+15:  }
+16: }
+A.- It outputs Stock Room Full!
+B.- The code will not compile because of line j1.
+C.- The code will not compile because of line j2.
+D.- The code will not compile because of line j3.
+E.- It compiles but throws an exception at runtime.
+F.+ It compiles but waits forever at runtime.
+Y: F. The code compiles without issue, so B, C, and D are incorrect. The limit on the cyclic
+barrier is 10, but the stream can generate only up to 9 threads that reach the barrier; there-
+fore the limit can never be reached, and F is the correct answer, making A and E incorrect.
+Note that even if the limit(9) statement was changed to limit(10), the program could
+still hang, since the JVM might not allocate 10 threads to the parallel stream.
+---19 chapter7
+Q: What statements about the following class definition are true? (Choose all that apply.)
+1: public class TicketManager {
+2:    private TicketManager() { super(); }
+3:    private static TicketManager instance;
+4:    public static synchronized TicketManager getInstance() { // k1
+5:       if (instance == null) instance = new TicketManager(); // k2
+6:       return instance;
+7:    }
+8:    private int tickets;
+9:    public int getTicketCount() { return tickets; }
+10:   public void makeTicketsAvailable(int value) { tickets += value; } // k3
+11:   public void sellTickets(int value) {
+12:      synchronized (this) { // k4
+13:         tickets -= value;
+14:   }
+15:  }
+16: }
+A.+ It compiles without issue.
+B.- The code will not compile because of line k2.
+C.- The code will not compile because of line k3.
+D.- The lock locks acquired on k1 and k4 are on the same object.
+E.- The class correctly prevents concurrency issues for the value of tickets when accessed by multiple threads.
+F.+ At most one instance of TicketManager will be created in the application.
+Y: A, F. The class compiles without issue so A is correct, and B and C are incorrect. The
+synchronized object on line k1 is TicketManager.class, while the synchronized object
+on line k4 is the instance of TicketManager. The class is not thread-safe because
+the makeTicketsAvailable() method is not synchronized, and E is incorrect. One
+thread could call sellTickets() while another thread has unblocked accessed to
+makeTicketsAvailable(), causing an invalid number of tickets to be reached as part
+of a race condition. Finally, F is correct because the class synchronizes using a static
+getInstance() method, preventing more than one instance from being created.
+---20 chapter7
+Q: Which of the following properties of concurrency are true? (Choose all that apply.)
+A.+ By itself, concurrency does not guarantee which task will be completed first.
+B.- Concurrency always improves the performance of an application.
+C.- Computers with a single processor do not benefit from concurrency.
+D.+ Applications with many resource-heavy tasks tend to benefit more from concurrency than ones with CPU-intensive tasks.
+E.- Concurrent tasks do not share the same memory.
+Y: A, D. By itself, concurrency does not guarantee which task will be completed first, so A is correct. Furthermore, applications with numerous resource requests will often be stuck
+waiting for a resource, which allows other tasks to run. Therefore, they tend to benefit
+more from concurrency than CPU-intensive tasks, so D is also correct. B is incorrect
+because concurrency may in fact make an application slower if it is truly single-threaded in
+nature. Keep in mind that there is a cost associated with allocating additional memory and
+CPU time to manage the concurrent process. C is incorrect because single-processor CPUs
+have been benefiting from concurrency for decades. Finally, E is incorrect; there are numer-
+ous examples in this chapter of concurrent tasks sharing memory.
+---21 chapter7
+Q: Assuming an implementation of the performCount() method is provided prior to runtime,
+which of the following are possible results of executing the following application? (Choose all that apply.)
+1: import java.util.*;
+2: import java.util.concurrent.*;
+3: import java.util.stream.*;
+4: public class CountZooAnimals {
+5:    public static Integer performCount(int exhibitNumber) {
+6:       // IMPLEMENTATION OMITTED
+7:    }
+8:    public static void printResults(Future<?> f) {
+9:       try {
+10:         System.out.println(f.get()); // o1
+11:      } catch (Exception e) {
+12:         System.out.println("Exception!");
+13:      }
+14:   }
+15:   public static void main(String[] args) throws InterruptedException, ExecutionException {
+16:      ExecutorService service = Executors.newSingleThreadExecutor();
+17:      final List<Future<?>> results = new ArrayList<>();
+18:      IntStream.range(0, 10)
+19:         .forEach(i -> results.add(
+20:            service.submit(() -> performCount(i)))); // o2
+21:      results.stream().forEach(f -> printResults(f));
+22:      service.shutdown();
+23:   }
+24:  }
+A.+ It outputs a number 10 times.
+B.- It outputs a Boolean value 10 times.
+C.+ It outputs a null value 10 times.
+D.+ It outputs Exception! 10 times.
+E.+ It hangs indefinitely at runtime.
+F.- It throws an unhandled exception at runtime.
+G.- The code will not compile because of line o1.
+H.- The code will not compile because of line o2.
+Y: A, C, D, E. The code compiles and runs without issue, so G and H are incorrect. The return type of performCount() is Integer, so the submit() is interpreted as being applied to a Callable<Integer> value. In this manner, the Future<?> is really a Future<Integer> object. One possible implementation of performCount() is just to return the input parameter; therefore A is a correct answer. B is incorrect, because the return type is Integer, not Boolean. The performCount() method could just return null, so C is a correct choice. The performCount() can also throw a runtime exception; therefore D is also a correct answer. It is also possible for our performCount() to hang indefinitely, such as in a dead-lock. This would cause Future.get() to hang in printResults(), making E also a correct answer. Finally, any exception thrown in performCount() will appear as an exception in the get() operation. Since the get() operations are caught in a try/catch block in printResults(), none of them will be unhandled, and F is incorrect.
+---22 chapter7
+Q: What is the result of executing the following program?
+1: import java.util.*;
+2: import java.util.concurrent.*;
+3: import java.util.stream.*;
+4: public class PrintCounter {
+5:    static int counter = 0;
+6: public static void main(String[] args) throws InterruptedException, ExecutionException {
+7:    ExecutorService service = Executors.newSingleThreadExecutor();
+8:    List<Future<?>> results = new ArrayList<>();
+9:    IntStream.iterate(0,i -> i+1).limit(5).forEach(
+10:      i -> results.add(service.execute(() -> counter++)) // n1
+11:   );
+12:   for(Future<?> result : results) {
+13:   System.out.print(result.get()+" "); // n2
+14:   }
+15:   service.shutdown();
+16: }
+17: }
+A.- It prints 0 1 2 3 4
+B.- It prints 1 2 3 4 5
+C.- It prints null null null null null
+D.- It hangs indefinitely at runtime.
+E.- The output cannot be determined.
+F.+ The code will not compile because of line n1.
+G.- The code will not compile because of line n2.
+Y: F. The key to solving this question is to remember that the execute() method returns void, not a Future object. Therefore, line n1 does not compile and F is the correct answer. If the submit() method had been used instead of execute(), then C would have been the correct answer, as the output of submit(Runnable) task is a Future<?> object which can only return null on its get() method.
