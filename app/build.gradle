@@ -7,7 +7,7 @@ apply from : '../jacoco.gradle'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.tiv.ocpapp"
@@ -38,7 +38,8 @@ ext {
     ANDROID_SUPPORT_LIB = '23.4.0'
     GREEN_DAO_VERSION = '2.2.1'
     DAGGER_VERSION = '2.5'
-    RX_JAVA_VERSION = '1.1.6'
+    RX_JAVA_VERSION = '2.1.0'
+    RX_ANDROID_VERSION ='2.0.1'
     RETRO_LAMBDA_VERSION = '3.3.0-beta3'
     ROBOLECTRIC_VERSION = '3.1'
     MOCKITO_VERSION = '1.10.19'
@@ -60,7 +61,8 @@ dependencies {
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     testApt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
-    compile "io.reactivex:rxjava:$RX_JAVA_VERSION"
+    compile "io.reactivex.rxjava2:rxjava:$RX_JAVA_VERSION"
+    compile "io.reactivex.rxjava2:rxandroid:$RX_ANDROID_VERSION"
     testCompile "org.robolectric:robolectric:$ROBOLECTRIC_VERSION"
     testCompile "org.mockito:mockito-core:$MOCKITO_VERSION"
 // Testing-only dependencies

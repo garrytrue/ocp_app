@@ -1,0 +1,37 @@
+---1 chapter6
+Q: Which of the following pairs fills in the blanks to make this code compile?
+5: public void read() ___________ SQLException {
+6: ___________ new SQLException();
+7: }
+A.- throw on line 5 and throw on line 6
+B.- throw on line 5 and throws on line 6
+C.+ throws on line 5 and throw on line 6
+D.- throws on line 5 and throws on line 6
+E.- None of the above. SQLException is a checked exception and cannot be thrown.
+F.- None of the above. SQLException is a runtime exception and cannot be thrown.
+Y: C. The method should declare that it throws an exception and the body of the method
+actually would throw it. Options E and F are incorrect because both checked and
+unchecked (runtime) exceptions can be declared in a method signature. Also, option F is
+incorrect because SQLException is a checked exception.
+---2 chapter6
+Q: Which of the following changes when made independently would make this code compile? (Choose all that apply.)
+1: public class StuckTurkeyCage implements AutoCloseable {
+2:    public void close() throws Exception {
+3:       throw new Exception("Cage door does not close");
+4:
+5:    public static void main(String[] args) {
+6:       try (StuckTurkeyCage t = new StuckTurkeyCage()) {
+7:         System.out.println("put turkeys in");
+8:       }
+9:    }
+10: }
+A.- Remove throws Exception from the declaration on line 2.
+B.+ Add throws Exception to the declaration on line 5.
+C.+ Change line 8 to } catch (Exception e) {}.
+D.- Change line 8 to } finally {}.
+E.- None of the above will make the code compile.
+F.- The code already compiles as is.
+Y: B, C. Option A is incorrect because it will move the compilation error to the close() method
+since it does throw an exception that must be handled or declared. Option B is correct
+because the unhandled exception becomes declared. Option C is correct because the exception
+becomes handled. Option D is incorrect because the exception remains unhandled.

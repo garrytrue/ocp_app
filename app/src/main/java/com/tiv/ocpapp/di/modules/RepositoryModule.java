@@ -11,12 +11,12 @@ import com.tiv.ocpapp.model_dao.DaoMaster;
 import com.tiv.ocpapp.model_dao.DaoSession;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import dagger.Module;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by tiv on 05.07.2016.
@@ -32,7 +32,8 @@ public class RepositoryModule {
     public RepositoryModule() {
 
     }
-    public void initRepositoryModule(Context context){
+
+    public void initRepositoryModule(Context context) {
         this.context = context;
         provideDaoSession();
     }
@@ -50,17 +51,31 @@ public class RepositoryModule {
 //            Generate and insert data only if question count in DB is 0
             LoadOcpDumper loadOcpDumpTextStructure = new LoadOcpDumpTextStructureImpl();
             try {
-                loadOcpDumpTextStructure.init(context.getAssets().open("ocp8.dump"));
-                List<Question> questions = loadOcpDumpTextStructure.loadQuestions();
+                loadOcpDumpTextStructure
+                        .loadQuestions(context.getAssets().open("ocp8.dump"))
+                        .observeOn(Schedulers.io())
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(questions -> {
+                                    for (Question q : questions) {
+                                        FakeDataGenerator.getInstance().insertQuestion(session, q);
+                                    }
+                                },
+                                error -> {
+                                },
+                                () -> {
+                                });
+/*
                 for (Question q : questions) {
                     FakeDataGenerator.getInstance().insertQuestion(session, q);
                 }
+*/
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     public long getQuestionsCount() {
         return session.getQuestionDao().count();
@@ -79,7 +94,7 @@ public class RepositoryModule {
         return currentId >= getQuestionsCount();
     }
 
-    public com.tiv.ocpapp.model_dao.Question getCurrentQuestion(){
+    public com.tiv.ocpapp.model_dao.Question getCurrentQuestion() {
         return currentQuestionHolder;
     }
 
